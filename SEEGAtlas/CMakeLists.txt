@@ -80,4 +80,4 @@ ENDIF()
 
 # Create plugin
 DefinePlugin( "${PluginSrc}" "${PluginHdr}" "${PluginHdrMoc}" "${PluginUi}" )
-target_link_libraries( ${PluginName} ContourSurface ${VTK_LIBRARIES} )
+target_link_libraries( ${PluginName} ContourSurface )
