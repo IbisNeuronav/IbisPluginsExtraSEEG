@@ -1,0 +1,1333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SEEGAtlasWidget</class>
+ <widget class="QWidget" name="SEEGAtlasWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>540</width>
+    <height>1048</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="toolTip">
+   <string>Press to change table view (Contacts / Channels)</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_5">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>520</width>
+        <height>1028</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QGroupBox" name="groupBox_LoadData">
+         <property name="title">
+          <string>Dataset Management</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="1" column="0">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0" colspan="2">
+             <widget class="QPushButton" name="pushLoadDatasetsFromDir">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Load MRI/CT From Dir</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QComboBox" name="comboBoxWhatToOpen">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <item>
+               <property name="text">
+                <string>Segmentations (pre-space)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Template</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Electrodes (pos-space)</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="3">
+             <widget class="QLabel" name="labelDirBase">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QCheckBox" name="checkBoxLightDatasetLoading">
+              <property name="text">
+               <string>Light version</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="comboBoxElectrodeType">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>Select electrode model from list</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>MNI electrodes (0.8mm^2)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>DIXI10 (5mm^2 - 10contacts)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>DIXI15 (5mm^2 - 15contacts)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>DIXI18 (5mm^2 - 18contacts)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STRIP (8 contacts)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>CONTACT (1 DIXIcontact)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MM09A51 (Micro-macro)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MM09A40 (Micro-macro)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>MM09A33 (Micro-macro)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>TEST</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Type: </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Visualization</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="checkBoxImagePlanes">
+              <property name="text">
+               <string>Show Image Planes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QComboBox" name="comboBoxBrainSegmentation"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="pushGenerateSurface">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Generate surface</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_Plans">
+         <property name="title">
+          <string>Electrodes Marking</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="9" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButtonSetEntryPointFromCursor">
+              <property name="text">
+               <string>From 2D cursor</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="3">
+             <widget class="QLineEdit" name="lineEditEntryZ">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Z</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Electrode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLineEdit" name="lineEditElectrodeName">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="readOnly">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="2">
+             <widget class="QPushButton" name="pushButtonLoad1Plan">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Load 1 Electrode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="lineEditTargetY">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Y</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="3">
+             <widget class="QPushButton" name="pushButtonSaveAllPlans">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Save All Electrodes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0" colspan="2">
+             <widget class="QPushButton" name="pushButtonLoadAllPlans">
+              <property name="text">
+               <string>Load All Electrodes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="2">
+             <widget class="QComboBox" name="comboBoxPlanSelect"/>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="lineEditEntryX">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>X</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="labelSetTarget_2">
+              <property name="text">
+               <string>Set Entry </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Target</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="3">
+             <widget class="QPushButton" name="pushButtonSetEntryPointFromCoords">
+              <property name="text">
+               <string>From 3D coord</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QLineEdit" name="lineEditEntryY">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Y</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="3">
+             <widget class="QPushButton" name="pushButtonSetTargetFromCoords">
+              <property name="text">
+               <string>From 3D coord</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QLineEdit" name="lineEditTargetZ">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Z</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="labelSetTarget">
+              <property name="text">
+               <string>Set Target </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1" colspan="2">
+             <widget class="QPushButton" name="pushButtonSetTargetFromCursor">
+              <property name="text">
+               <string>From 2D cursor</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Entry</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="lineEditTargetX">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>X</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_TrajPlanning">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>500</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Contact's Information</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="3" column="0" colspan="4">
+           <widget class="QTabWidget" name="tabWidgetScores">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
+              <height>600</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <property name="movable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="tabScoreBest">
+             <attribute name="title">
+              <string>Electrodes</string>
+             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <item>
+               <widget class="QTableWidget" name="tableWidgetElectrodes">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>All Electrodes tip and entry points</string>
+                </property>
+                <property name="rowCount">
+                 <number>9</number>
+                </property>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>55</number>
+                </attribute>
+                <attribute name="horizontalHeaderMinimumSectionSize">
+                 <number>35</number>
+                </attribute>
+                <attribute name="verticalHeaderDefaultSectionSize">
+                 <number>17</number>
+                </attribute>
+                <attribute name="verticalHeaderMinimumSectionSize">
+                 <number>17</number>
+                </attribute>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <column>
+                 <property name="text">
+                  <string>Name</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>TPx</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>TPy</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>TPz</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>EPx</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>EPy</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>EPz</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pushButtonShowContactsTable">
+            <property name="toolTip">
+             <string>if checked shows contacts / if NOT checked shows channels</string>
+            </property>
+            <property name="text">
+             <string>Showing CONTACTS in table</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>true</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QPushButton" name="pushButtonFindAnatLocChannel">
+              <property name="text">
+               <string>Find Channels Anat. Loc.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonFindAnatLoc">
+              <property name="text">
+               <string>Find Contacts Anatomical Location</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBoxSaveChannelVolume">
+              <property name="toolTip">
+               <string>If checked save channles as minc files</string>
+              </property>
+              <property name="text">
+               <string>Save Volume</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_Visualization">
+         <property name="title">
+          <string>Electrode Visualization</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="1" column="1">
+             <widget class="QSlider" name="horizontalSliderCylRadius">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="value">
+               <number>10</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Electrodes length (mm)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="2">
+             <widget class="QLineEdit" name="lineEditLocationValue">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="comboBoxProbeEyeSelect">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>T1w only</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Multi-Modal (T1,Gd,CTA)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>T1w-CTA only</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>T1w-Gd only</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>All Angios(Gd,CTA)</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QPushButton" name="pushButtonProbeEye">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Probe-Eye View</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="lineEditCylRadius">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>1</string>
+              </property>
+              <property name="readOnly">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSlider" name="horizontalSliderCylinderLength">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>200</number>
+              </property>
+              <property name="value">
+               <number>80</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="lineEditCylinderLength">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>80</string>
+              </property>
+              <property name="readOnly">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QPushButton" name="pushButtonBatch">
+              <property name="text">
+               <string>Run Batch</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="pushButtonLocationValue">
+              <property name="toolTip">
+               <string>Get location of ATLAS volume at cursor's location</string>
+              </property>
+              <property name="text">
+               <string>Get Location's Value</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Electrodes diameter (mm)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QPushButton" name="pushButtonShowOnlyContacts">
+              <property name="text">
+               <string>Show Only Contacts</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="pushButtonShowOnlyChannels">
+              <property name="text">
+               <string>Show Only Channels</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>tabWidgetScores</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButtonLoadAllPlans</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onLoadPlanningFromDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>222</x>
+     <y>454</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonSaveAllPlans</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onSavePlanningToDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>454</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxPlanSelect</sender>
+   <signal>activated(int)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onPlanSelect(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonSetEntryPointFromCoords</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onSetEntryPointFrom3DCoords()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonSetTargetFromCoords</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onSetTargetPointFrom3DCoords()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>396</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonSetTargetFromCursor</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onSetTargetPointFromCursor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>396</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxElectrodeType</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onChangeElectrodeType(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonSetEntryPointFromCursor</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onSetEntryPointFromCursor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushLoadDatasetsFromDir</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onLoadSEEGDatasetsFromDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>177</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonLoad1Plan</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onLoad1Plan()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>454</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditElectrodeName</sender>
+   <signal>returnPressed()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onChangeElectrodeName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabWidgetScores</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onTabSelect(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>315</x>
+     <y>791</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEditCylinderLength</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onChangeTrajectoryCylinderLength(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>959</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderCylinderLength</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onChangeTrajectoryCylinderLength(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>959</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderCylRadius</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onChangeTrajectoryCylinderRadius(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>907</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonProbeEye</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onProbeEyeView()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>159</x>
+     <y>988</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonFindAnatLoc</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onFindAnatLocation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>333</x>
+     <y>518</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonFindAnatLocChannel</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onFindChannelsAnatLocation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>200</x>
+     <y>518</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonLocationValue</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onGetLocationValue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>854</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>290</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonShowContactsTable</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onShowContactsChannelsTable(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>351</x>
+     <y>548</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>290</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonBatch</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onRunBatchAnalysis()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>988</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>309</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonShowOnlyChannels</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onCreateAllElectrodesWithSelectedChannels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>1017</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>309</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonShowOnlyContacts</sender>
+   <signal>clicked()</signal>
+   <receiver>SEEGAtlasWidget</receiver>
+   <slot>onCreateAllElectrodesWithSelectedContacts()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>1017</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>309</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onLoadSEEGDatasetsFromDir()</slot>
+  <slot>onSetTargetPointFromCursor()</slot>
+  <slot>onSetTargetPointFrom3DCoords()</slot>
+  <slot>onRefreshVisualization()</slot>
+  <slot>onLoadPlanningFromFile()</slot>
+  <slot>onSavePlanningToFile()</slot>
+  <slot>onTrajectoryTableCellChange(int,int,int,int)</slot>
+  <slot>onProbeEyeView()</slot>
+  <slot>onChangeTrajectoryCylinderRadius(int)</slot>
+  <slot>onPlanSelect(int)</slot>
+  <slot>onSaveAllPlans()</slot>
+  <slot>onLoadAllPlans()</slot>
+  <slot>onSetEntryPointFrom3DCoords()</slot>
+  <slot>onSetEntryPointFromSelection()</slot>
+  <slot>onAddPlan()</slot>
+  <slot>onChangeTrajectoryCylinderLength(int)</slot>
+  <slot>onSaveActivePlanningToFile()</slot>
+  <slot>onSaveActivePlanningToDirectory()</slot>
+  <slot>onSavePlanningToDirectory()</slot>
+  <slot>onLoadPlanningFromDirectory()</slot>
+  <slot>onChangeElectrodeType(QString)</slot>
+  <slot>onChangeTrajectoryCylinderLength(QString)</slot>
+  <slot>onSetEntryPointFromCursor()</slot>
+  <slot>onLoad1Plan()</slot>
+  <slot>onChangeElectrodeName()</slot>
+  <slot>onTabSelect(int)</slot>
+  <slot>onUpdateElectrode()</slot>
+  <slot>onFindAnatLocation()</slot>
+  <slot>onFindChannelsAnatLocation()</slot>
+  <slot>onGetLocationValue()</slot>
+  <slot>onShowContactsChannelsTable(bool)</slot>
+  <slot>onRunBatchAnalysis()</slot>
+  <slot>onCreateAllElectrodesWithSelectedContacts()</slot>
+  <slot>onCreateAllElectrodesWithSelectedChannels()</slot>
+  <slot>onChangeCheckBoxImagePlanes(bool)</slot>
+ </slots>
+</ui>
