@@ -472,14 +472,16 @@ SEEGContactsROIPipeline::~SEEGContactsROIPipeline() {
 }
 
 // Contact based analysis of labels   
-    vector <int> SEEGContactsROIPipeline::GetLabelsInContact(int contactIndex, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap, int &voxelsInContactVol){
+    vector <int> SEEGContactsROIPipeline::GetLabelsInContact(int contactIndex, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap, int &voxelsInContactVol, bool useCylinder){
         //Get a vector with pairs containing labels and percentage for this contact
 
         //1. Find region that corresponds to contact
         FloatVolume::Pointer anatLabelsOfContact;
-        //anatLabelsOfContact = CalcVolOfContact(contactIndex, electrode, anatLabelsMap);  //considers volume that could record EEG - looks for area with largest presence in recording volume
-        anatLabelsOfContact = CalcVolOfCenterOfContact(contactIndex, electrode, anatLabelsMap); //only considers central point of contact
-
+        if (useCylinder == true){ // if true use the whole contact's cylinder to estimate location /
+            anatLabelsOfContact = CalcVolOfContact(contactIndex, electrode, anatLabelsMap);  //considers volume that could record EEG - looks for area with largest presence in recording volume
+        } else { // if false use only central point and 1 voxel around it
+            anatLabelsOfContact = CalcVolOfCenterOfContact(contactIndex, electrode, anatLabelsMap); //only considers central point of contact
+        }
         //2. Get size of region
         FloatVolume::RegionType region = anatLabelsOfContact->GetRequestedRegion();
         FloatVolume::SizeType regionSize = region.GetSize();
@@ -565,7 +567,7 @@ SEEGContactsROIPipeline::~SEEGContactsROIPipeline() {
         FloatVolume::Pointer vol = volDuplicator->GetOutput();
         vol->DisconnectPipeline();
 
-        double extraRadious = 1; // to include partial voxels it should be 1 - computed as extraRadious * volSpacing
+        double extraRadious = 1; // to include partial voxels it should be 1  (that gives 27 voxels) / to ONLY consider central point use zero - RIZ should be CHANGED to config value - computed as extraRadious * volSpacing
         FloatVolume::SpacingType spacing = vol->GetSpacing();
         Point3D extraRadiousIndex;
         extraRadiousIndex[0] =extraRadious * spacing[0];
@@ -623,12 +625,17 @@ SEEGContactsROIPipeline::~SEEGContactsROIPipeline() {
         return channelRecVol;
     }
 
-    vector <int> SEEGContactsROIPipeline::GetLabelsInChannel(int contact1Index, int contact2Index, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap){
+    vector <int> SEEGContactsROIPipeline::GetLabelsInChannel(int contact1Index, int contact2Index, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap, bool useCylinder){
         //Get a vector with pairs containing labels and percentage for this contact
 
         //1. Find volume that corresponds to bipolar channel's recordings
         FloatVolume::Pointer anatLabelsOfChannel;
         anatLabelsOfChannel = CalcVolOfChannel(contact1Index, contact2Index, electrode, anatLabelsMap);  //considers volume that could record EEG - looks for area with largest presence in recording volume
+        if (useCylinder == true){ // if true use the whole contact's cylinder to estimate location /
+            anatLabelsOfChannel = CalcVolOfChannel(contact1Index, contact2Index, electrode, anatLabelsMap);  //considers volume that could record EEG - looks for area with largest presence in recording volume
+        } else { // if false use only central point and 1 voxel around it
+            anatLabelsOfChannel = CalcVolOfCenterOfContact((contact2Index - contact1Index), electrode, anatLabelsMap); //only considers central point of contact
+        }
 
         //2. Get size of region - RIZ-> not sure how to define region... maybe use normal BoundingBox
         FloatVolume::RegionType region = anatLabelsOfChannel->GetRequestedRegion();

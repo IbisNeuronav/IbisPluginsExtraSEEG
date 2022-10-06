@@ -39,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>520</width>
-        <height>1028</height>
+        <width>559</width>
+        <height>1014</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -215,18 +215,18 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <layout class="QGridLayout" name="gridLayout_6">
-            <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QComboBox" name="comboBoxBrainSegmentation"/>
+            </item>
+            <item>
              <widget class="QCheckBox" name="checkBoxImagePlanes">
               <property name="text">
                <string>Show Image Planes</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QComboBox" name="comboBoxBrainSegmentation"/>
-            </item>
-            <item row="2" column="1">
+            <item>
              <widget class="QPushButton" name="pushGenerateSurface">
               <property name="enabled">
                <bool>false</bool>
@@ -543,7 +543,70 @@
           <string>Contact's Information</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="3" column="0" colspan="4">
+          <item row="2" column="1">
+           <widget class="QPushButton" name="pushButtonShowContactsTable">
+            <property name="toolTip">
+             <string>if checked shows contacts / if NOT checked shows channels</string>
+            </property>
+            <property name="text">
+             <string>Showing CONTACTS in table</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>true</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QPushButton" name="pushButtonFindAnatLoc">
+              <property name="text">
+               <string>Find Contacts Anat. Loc.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBoxUseCylinder">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use Cylinder (checked) or central point as model of the contact/channel&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Use Cylinder</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonFindAnatLocChannel">
+              <property name="text">
+               <string>Find Channels Anat. Loc.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBoxSaveChannelVolume">
+              <property name="toolTip">
+               <string>If checked save channles as minc files</string>
+              </property>
+              <property name="text">
+               <string>Save Vol.</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0" colspan="4">
            <widget class="QTabWidget" name="tabWidgetScores">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -602,16 +665,16 @@
                 <property name="rowCount">
                  <number>9</number>
                 </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>55</number>
-                </attribute>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>35</number>
                 </attribute>
-                <attribute name="verticalHeaderDefaultSectionSize">
-                 <number>17</number>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>55</number>
                 </attribute>
                 <attribute name="verticalHeaderMinimumSectionSize">
+                 <number>17</number>
+                </attribute>
+                <attribute name="verticalHeaderDefaultSectionSize">
                  <number>17</number>
                 </attribute>
                 <row/>
@@ -663,59 +726,6 @@
              </layout>
             </widget>
            </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButtonShowContactsTable">
-            <property name="toolTip">
-             <string>if checked shows contacts / if NOT checked shows channels</string>
-            </property>
-            <property name="text">
-             <string>Showing CONTACTS in table</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>true</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QPushButton" name="pushButtonFindAnatLocChannel">
-              <property name="text">
-               <string>Find Channels Anat. Loc.</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButtonFindAnatLoc">
-              <property name="text">
-               <string>Find Contacts Anatomical Location</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxSaveChannelVolume">
-              <property name="toolTip">
-               <string>If checked save channles as minc files</string>
-              </property>
-              <property name="text">
-               <string>Save Volume</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -865,13 +875,6 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="2">
-             <widget class="QPushButton" name="pushButtonBatch">
-              <property name="text">
-               <string>Run Batch</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QPushButton" name="pushButtonLocationValue">
               <property name="toolTip">
@@ -905,6 +908,13 @@
              <widget class="QPushButton" name="pushButtonShowOnlyChannels">
               <property name="text">
                <string>Show Only Channels</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QPushButton" name="pushButtonBatch">
+              <property name="text">
+               <string>Run Batch</string>
               </property>
              </widget>
             </item>
