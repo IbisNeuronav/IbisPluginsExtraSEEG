@@ -56,11 +56,10 @@ namespace seeg {
 
 // Segmentation Atlas
 #define VOL_PRE_ANATOMICAL_REGIONS "AnatLabels"
-#define FILE_PRE_ANATOMICAL_REGIONS "segmentation/seg_atlas_labels_gm.mnc"   //seg_lob_labels.mnc" //seg_oasis_labels.mnc" //tal_seg_lobesHCAG.mnc"
+#define FILE_PRE_ANATOMICAL_REGIONS "segmentation/seg_lob_labels.mnc" //ICBM251 2009c atlas  - -seg_atlas_labels_gm.mnc" : MICCAI atlas   //seg_oasis_labels.mnc" //tal_seg_lobesHCAG.mnc"
 #define VOL_PRE_CSF_WM_GM "CSF_WM_GM"
 #define FILE_PRE_CSF_WM_GM "segmentation/seg_cls_labels.mnc"
-#define FILE_ATLAS_LABELS "segmentation/label_map.xml" // MUST be at in EVERY patient segmentation dir
-
+#define FILE_ATLAS_LABELS "segmentation/label_map_SEEGAtlas.xml" // MUST be at in EVERY patient segmentation dir // options:  label_map_MICCAI.xml for MICAII atlas / label_map_ICBM.xml for ICBM152 2009 atlas
 
 //FIN addition 20151123
 

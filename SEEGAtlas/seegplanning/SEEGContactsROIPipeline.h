@@ -90,7 +90,7 @@ namespace seeg {
 
         void CalcTrajBoundingBox(FloatVolume::IndexType entryPointIndex, FloatVolume::IndexType targetPointIndex, Point3D maxRadius, FloatVolume::RegionType& region);
 
-        vector<int> GetLabelsInContact(int contactIndex, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap, int &voxelsInContactVol);
+        vector<int> GetLabelsInContact(int contactIndex, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap, int &voxelsInContactVol, bool useCylinder);
 
         FloatVolume::Pointer CalcVolOfContact(int contactIndex, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap);
 
@@ -101,7 +101,7 @@ namespace seeg {
 
         FloatVolume::Pointer CalcChannelRecordingArea(Point3D contact1Center, Point3D contact2Center, double maxRadius);
 
-        vector<int> GetLabelsInChannel(int contact1Index, int contact2Index, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap);
+        vector<int> GetLabelsInChannel(int contact1Index, int contact2Index, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap, bool useCylinder);
 
         FloatVolume::Pointer CalcVolOfChannel(int contact1Index, int contact2Index, ElectrodeInfo::Pointer electrode, FloatVolume::Pointer anatLabelsMap);
 

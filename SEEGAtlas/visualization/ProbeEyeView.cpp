@@ -159,7 +159,7 @@ namespace seeg {
         m_ProbeEyeCursorActor->SetMapper( m_ProbeEyeCursorMapper );
         m_ProbeEyeCursorActor->PickableOff();
         m_ProbeEyeCursorActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-        m_ProbeEyeCursorActor->GetProperty()->SetLineWidth(1.5);
+        m_ProbeEyeCursorActor->GetProperty()->SetLineWidth(3);
 
         m_ProbeEyeRenderer->AddActor(m_ProbeEyeCursorActor);
         m_ProbeEyeRenderer->AddActor(m_ProbeEyeImageSlice);

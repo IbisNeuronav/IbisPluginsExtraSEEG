@@ -148,8 +148,8 @@ namespace seeg {
         m_VolModel = imageFilter->GetOutput();
         imageFilter->Update();
 
-        string filename = "/Users/rzelmann/Desktop/modelVol.mnc";
-        WriteFloatVolume(filename, m_VolModel);
+      //  string filename = "/Users/rzelmann/Desktop/modelVol.mnc"; //RIZ: 2022
+       // WriteFloatVolume(filename, m_VolModel);
     }
 
 

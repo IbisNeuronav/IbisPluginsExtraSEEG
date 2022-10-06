@@ -125,9 +125,10 @@ SEEGAtlasWidget::~SEEGAtlasWidget()
     delete ui;
     m_ActivePlanData.m_CylObj->Delete();
     delete m_TrajVisWidget;
-    m_SavedPlansObject->Delete();
-    m_TrajPlanMainObject->Delete();
-    m_PlanningRootObject->Delete();
+
+    Q_ASSERT(m_pluginInterface);
+    IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
+    ibisApi->RemoveObject(m_PlanningRootObject);
 
     disconnect(Application::GetInstance().GetSceneManager(), SIGNAL(ObjectAdded(int)), this, SLOT(OnObjectAddedSlot(int)));
     disconnect(Application::GetInstance().GetSceneManager(), SIGNAL(ObjectRemoved(int)), this, SLOT(OnObjectRemovedSlot(int)));
@@ -148,7 +149,7 @@ void SEEGAtlasWidget::InitUI()
     ui->comboBoxWhatToOpen->setVisible(true);
     ui->horizontalSliderCylRadius->setVisible(true);
     ui->horizontalSliderCylinderLength->setVisible(true);
-    ui->pushButtonFindAnatLocChannel->setVisible(false);
+    ui->pushButtonFindAnatLocChannel->setVisible(true);
     ui->comboBoxBrainSegmentation->setVisible(false);
     ui->pushGenerateSurface->setVisible(false);
 
@@ -262,6 +263,7 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec) {
 
     double electrodeLength = ui->lineEditCylinderLength->text().toFloat();
     Resize3DLineSegmentSingleSide(m_AllPlans[iElec].targetPoint, m_AllPlans[iElec].entryPoint, electrodeLength, pEntryPointLong);
+   // m_AllPlans[iElec].entryPoint = pEntryPointLong; // RIZ2022: update entry point to long point
     CreateElectrode(iElec, pTargetPoint ,pEntryPointLong);
 }
 
@@ -316,13 +318,20 @@ void SEEGAtlasWidget::DeleteElectrode(const int iElec) {
 void SEEGAtlasWidget::CreateActivePlan(){
     int iElec = ui->comboBoxPlanSelect->currentIndex();
 	qDebug() << "Entering CreateActivePlan - Elec" <<iElec;
-    Point3D pDeep = m_AllPlans[iElec].targetPoint;
-    Point3D pSurface = m_AllPlans[iElec].entryPoint;
     // Remove and then create again
+    Point3D pDeep;
+    Point3D pSurface;
     if (m_SavedPlansObject->GetNumberOfChildren() > 0) {
         m_SavedPlansObject->RemoveChild(m_ActivePlanData.m_CylObj);
         m_ActivePlanData.m_CylObj->SetHidden(true);
         m_ActivePlanData.m_CylObj->Delete();
+        if(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_Line) {
+            pDeep = m_SavedPlansData[iElec].m_ElectrodeDisplay.m_Line->GetPoint1(); //m_AllPlans[iElec].targetPoint;
+            pSurface =  m_SavedPlansData[iElec].m_ElectrodeDisplay.m_Line->GetPoint2();//m_AllPlans[iElec].entryPoint;
+        }
+    } else {
+        pDeep = m_AllPlans[iElec].targetPoint;
+        pSurface =  m_AllPlans[iElec].entryPoint;
     }
     m_ActivePlanData = CreateCylinderObj("active trajectory", pDeep, pSurface); //Active Electrode does not include contacts -> only the electrode
     m_ActivePlanData.m_CylObj->SetOpacity(0.5); //make active semi -transparent
@@ -616,7 +625,7 @@ void SEEGAtlasWidget::onLoadSEEGDatasetsFromDir()  {
 void SEEGAtlasWidget::onLoadSEEGDatasetsFromDir(QString dirName)  {
 
     if (dirName == QString("")) {
-        dirName = QFileDialog::getExistingDirectory( this, tr("Open Base Directory"), "/", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        dirName = QFileDialog::getExistingDirectory( this, tr("Open Base Directory"), "/", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
         if (dirName == QString("")) {
             return;
         }
@@ -827,11 +836,13 @@ void SEEGAtlasWidget::onFindAnatLocation(seeg::ElectrodeInfo::Pointer electrode)
 		qDebug() << " Electrode Type: " <<  m_ElectrodeModel->ElectrodeTypeEnumToString(electrode->GetElectrodeModelType()).c_str();
         SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModelType()); //volume is only to have size,
 
+        bool useCylinder = ui->checkBoxUseCylinder->isChecked();
+
         for (int iContact=0; iContact<nContacts; iContact++) {
             // Find anatomical location for each contact of the eletrode
             vector<int> labelsCount;
             int voxelsInContactVol;
-            labelsCount = pipelineContacts->GetLabelsInContact(iContact, electrode, anatLabelsVol, voxelsInContactVol);
+            labelsCount = pipelineContacts->GetLabelsInContact(iContact, electrode, anatLabelsVol, voxelsInContactVol, useCylinder);
             ContactInfo::Pointer contact = electrode->GetOneContact(iContact);
             //Compute Most common Label (highest count)
             //int probaMaxLabel = std::max_element(labelsCount, labelsCount.size());
@@ -841,11 +852,11 @@ void SEEGAtlasWidget::onFindAnatLocation(seeg::ElectrodeInfo::Pointer electrode)
             int totalVoxelsLabels =0;
             for (int iLabel=0; iLabel<labelsCount.size(); iLabel++) {
                 totalVoxelsLabels+= labelsCount[iLabel];
-                if (labelsCount[iLabel] > sumMaxLabel) {  // using > or >= changes the results when 0.5 proba
+                if ((labelsCount[iLabel] > 0) && (labelsCount[iLabel] >= sumMaxLabel)) {  // using > or >= changes the results when 0.5 proba
                     sumMaxLabel = labelsCount[iLabel];
                     indexMaxLabel = iLabel;
                     //float proba = float(sumMaxLabel)/float(totalVoxelsLabels);
-					qDebug() << " Most Common Label so far: " << indexMaxLabel <<" with Number of voxels of Occupacy: "<< sumMaxLabel << " out of: "<<voxelsInContactVol;
+                    qDebug() << " Most Common Label so far: " << indexMaxLabel  << " - name:" << labelsMap[indexMaxLabel].c_str() <<" with Number of voxels of Occupacy: "<< sumMaxLabel << " out of: "<<voxelsInContactVol;
                 }
             }
 
@@ -873,10 +884,11 @@ void SEEGAtlasWidget::onFindChannelsAnatLocation(){
     int nElec = m_SEEGElectrodesCohort->GetNumberOfElectrodesInCohort();
     vector<string> electrodeNames = m_SEEGElectrodesCohort->GetElectrodeNames();
     bool saveChannelInVol = ui->checkBoxSaveChannelVolume->isChecked();
+
     QString dirname = QString("");
     if (saveChannelInVol == true) { // Select directory where to save channel model volumes.
         QString baseDir = ui->labelDirBase->text();
-        dirname = QFileDialog::getExistingDirectory(this, tr("Select Directory where Channel Model volumes go"), baseDir);
+        dirname = QFileDialog::getExistingDirectory(this, tr("Select Directory where Channel Model volumes go"), baseDir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
     }
     for (int iEl=0; iEl<nElec; iEl++) {
         ElectrodeInfo::Pointer electrode = m_SEEGElectrodesCohort->GetTrajectoryInBestCohort(electrodeNames[iEl]);
@@ -900,11 +912,12 @@ void SEEGAtlasWidget::onFindChannelsAnatLocation(seeg::ElectrodeInfo::Pointer el
 	   qDebug() << " Electrode Type: " <<  m_ElectrodeModel->ElectrodeTypeEnumToString(electrode->GetElectrodeModelType()).c_str();
         SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModelType()); //volume is only to have size,
         // Find anatomical location for each bipolar channel of the eletrode (nChannels = nContacts-1)
+        bool useCylinder = ui->checkBoxUseCylinder->isChecked();
         map <int,string> labelsMap = ReadAtlasLabels();
         for (int iContact=0; iContact<(nContacts-1); iContact++) {
 			qDebug() <<"onFindChannelsAnatLocation - contact: " << iContact;
             vector<int> labelsCount;
-            labelsCount = pipelineContacts->GetLabelsInChannel(iContact, iContact +1, electrode, anatLabelsVol);
+            labelsCount = pipelineContacts->GetLabelsInChannel(iContact, iContact +1, electrode, anatLabelsVol, useCylinder);
             ChannelInfo::Pointer channel = electrode->GetOneChannel(iContact); // channel's index is the forst of its 2 contacts.
             //Compute Most common Label (highest count)
             //int probaMaxLabel = std::max_element(labelsCount, labelsCount.size());
@@ -1129,7 +1142,7 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
      //ask for the directory where all the files with each planning are (one per target)
     if (dirName == QString("")) {
         QString baseDir = ui->labelDirBase->text();
-        dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory where Planning Files are"), baseDir);
+        dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory where Planning Files are"), baseDir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
          if (dirName == QString("")) {
              return;
          }
@@ -1194,7 +1207,8 @@ void SEEGAtlasWidget::onLoad1Plan() {
     QString baseDir = ui->labelDirBase->text();
 
     QString qFilename = QFileDialog::getOpenFileName(this,
-            tr("Load One Plan (e.g. pos_trajectories_AG.csv"), baseDir, tr("IBIS Planning Data (*.csv)"));
+            tr("Load One Plan (e.g. pos_trajectories_AG.csv"), baseDir,
+            tr("IBIS Planning Data (*.csv)"), nullptr, QFileDialog::DontUseNativeDialog);
     if (qFilename == "") {
        return;
    }
@@ -1249,7 +1263,7 @@ void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
     // Save one file with all electrodes and one file per electrode with contacts' information
     if (dirName == QString("")) {
         QString baseDir = ui->labelDirBase->text();
-        dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Electrode Files"), baseDir);
+        dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Electrode Files"), baseDir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
     }
     if (dirName != QString("")) {
         //dirname.append("/AllTrajectories");
@@ -2258,7 +2272,7 @@ map <int,string> SEEGAtlasWidget::ReadAtlasLabels() {
 void SEEGAtlasWidget::onRunBatchAnalysis(){
     //1.1 Load anatomical Data
     QString baseDirectory = QFileDialog::getExistingDirectory(  this, tr("Open Base Directory - where subdirs are the patients' data"), "/",
-                                                                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
 
     if (baseDirectory == QString("")) {
         return;
@@ -2327,4 +2341,6 @@ void SEEGAtlasWidget::onRunBatchAnalysis(){
 		qDebug() << "File "<< fullFileNamePatients.c_str() << "not found.";
     }
 }
+
+
 
