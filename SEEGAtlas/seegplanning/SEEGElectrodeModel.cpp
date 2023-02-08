@@ -1,9 +1,22 @@
 #include "SEEGElectrodeModel.h"
 
-
-
 namespace seeg {
 
+    ObjectSerializationMacro(seeg::SEEGElectrodeModel);
+
+    SEEGElectrodeModel::SEEGElectrodeModel() 
+    {
+        m_ElectrodeName = "";
+        m_TipContactHeight = 0;
+        m_recordingRadius = 0; // CHECK VALUES - might depend based on electrode type!!!
+        m_PegHeight = 0;
+        m_PegDiameter = 0;
+        m_ContactDiameter = 0;
+        m_ContactHeight = 0;
+        m_ContactSpacing = 0;
+        m_NumContacts = 0;
+        m_TipOffset = 0;
+    }
 
     Point3D SEEGElectrodeModel::SEEGCalcContactPosition(unsigned int contact_index, Point3D electrodeTip, Point3D entryPoint, bool onlyInsideBrain) {
         //overlays CalcContactPosition from ElectrodeModel to consider first contact different size
@@ -170,5 +183,19 @@ namespace seeg {
         // compute the distance from the tip to the center of the specified contact
         return m_TipOffset + m_TipContactHeight/2 + contact_index * m_ContactSpacing + m_ContactSpacing/2;  // assuming contact spacing is from center to center of contacts
 
+    }
+
+    void SEEGElectrodeModel::Serialize(Serializer * ser)
+    {
+        ::Serialize(ser, "ElectrodeName", m_ElectrodeName);
+        ::Serialize(ser, "TipContactHeight", m_TipContactHeight);
+        ::Serialize(ser, "RecordingRadius", m_recordingRadius);
+        ::Serialize(ser, "PegHeight", m_PegHeight);
+        ::Serialize(ser, "PegDiameter", m_PegDiameter);
+        ::Serialize(ser, "ContactDiameter", m_ContactDiameter);
+        ::Serialize(ser, "ContactHeight", m_ContactHeight);
+        ::Serialize(ser, "ContactSpacing", m_ContactSpacing);
+        ::Serialize(ser, "NumContacts", m_NumContacts);
+        ::Serialize(ser, "TipOffset", m_TipOffset);
     }
 }

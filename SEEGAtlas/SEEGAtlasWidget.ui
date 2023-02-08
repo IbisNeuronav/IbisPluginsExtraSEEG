@@ -39,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>559</width>
-        <height>1014</height>
+        <width>520</width>
+        <height>1028</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -52,19 +52,13 @@
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="1" column="0">
            <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0" colspan="2">
-             <widget class="QPushButton" name="pushLoadDatasetsFromDir">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="1" column="2">
+             <widget class="QCheckBox" name="checkBoxLightDatasetLoading">
               <property name="text">
-               <string>Load MRI/CT From Dir</string>
+               <string>Light version</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -88,6 +82,32 @@
                 <string>Electrodes (pos-space)</string>
                </property>
               </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Type: </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="2">
+             <widget class="QPushButton" name="pushLoadDatasetsFromDir">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Load MRI/CT From Dir</string>
+              </property>
              </widget>
             </item>
             <item row="3" column="0" colspan="3">
@@ -117,16 +137,6 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QCheckBox" name="checkBoxLightDatasetLoading">
-              <property name="text">
-               <string>Light version</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="comboBoxElectrodeType">
               <property name="enabled">
@@ -134,66 +144,6 @@
               </property>
               <property name="toolTip">
                <string>Select electrode model from list</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>MNI electrodes (0.8mm^2)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>DIXI10 (5mm^2 - 10contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>DIXI15 (5mm^2 - 15contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>DIXI18 (5mm^2 - 18contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>STRIP (8 contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>CONTACT (1 DIXIcontact)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MM09A51 (Micro-macro)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MM09A40 (Micro-macro)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MM09A33 (Micro-macro)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>TEST</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Type: </string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>

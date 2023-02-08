@@ -15,7 +15,7 @@
 #include <vtkImageActor.h>
 #include <vtkImageStack.h>
 #include <vtkInteractorStyleImage.h>
-#include <QVTKWidget.h>
+#include <QVTKRenderWidget.h>
 #include <map>
 #include <string>
 #include <vtkHandleWidget.h>
@@ -123,7 +123,7 @@ namespace seeg {
         void Execute(vtkObject *caller, unsigned long id, void*);
         void TriplanarRender(int index);
         void TriplanarRender();
-        QVTKWidget * GetTriplanarWidget(int index) {
+        QVTKRenderWidget * GetTriplanarWidget(int index) {
             return &m_TriplanarWidget[index];
         }
 
@@ -139,7 +139,7 @@ namespace seeg {
 
 
 
-        QVTKWidget * GetProbeEyeWidget() {
+        QVTKRenderWidget * GetProbeEyeWidget() {
             return &m_ProbeEyeWidget;
         }
 
@@ -180,7 +180,7 @@ namespace seeg {
         // Triplanar view
         vtkSmartPointer<vtkRenderer> m_TriplanarRenderer[3];
         vtkSmartPointer<vtkImageStack> m_TriplanarImageStack[3];
-        QVTKWidget m_TriplanarWidget[3];
+        QVTKRenderWidget m_TriplanarWidget[3];
         vtkSmartPointer<TriplanarInteractorStyle> m_TriplanarInteractorStyles[3];
         vtkSmartPointer<vtkHandleWidget> m_CrosshairHandle[3];
         vtkSmartPointer<vtkPointHandleRepresentation3D> m_CrosshairHandleRep[3];
@@ -190,7 +190,7 @@ namespace seeg {
         vtkSmartPointer<vtkRenderer> m_ProbeEyeRenderer;
         vtkSmartPointer<vtkRenderer> m_ProbeEyeOverlayRenderer;
         vtkSmartPointer<vtkImageStack> m_ProbeEyeImageStack;
-        QVTKWidget m_ProbeEyeWidget;
+        QVTKRenderWidget m_ProbeEyeWidget;
         vtkSmartPointer<ProbeEyeInteractorStyle> m_ProbeEyeInteractorStyle;
         vtkSmartPointer<vtkPolyData> m_ProbeEyeCursorPolyData;
         vtkSmartPointer<vtkPolyDataMapper>  m_ProbeEyeCursorMapper;

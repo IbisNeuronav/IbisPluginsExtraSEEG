@@ -1,6 +1,6 @@
 project( ${PluginName} )
 
-find_package(VTK REQUIRED)
+find_package(VTK REQUIRED NO_MODULE COMPONENTS RenderingImage )
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/core
@@ -80,4 +80,4 @@ ENDIF()
 
 # Create plugin
 DefinePlugin( "${PluginSrc}" "${PluginHdr}" "${PluginHdrMoc}" "${PluginUi}" )
-target_link_libraries( ${PluginName} ContourSurface )
+target_link_libraries( ${PluginName} ${VTK_LIBRARIES} ContourSurface )

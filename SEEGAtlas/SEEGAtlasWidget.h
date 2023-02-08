@@ -133,8 +133,6 @@ private slots:
     //Batch Analysis
     void onRunBatchAnalysis();
 
-
-
 private:
 
    void SelectTrajectoryInList(seeg::Point3D targetPoint, seeg::Point3D entryPoint);

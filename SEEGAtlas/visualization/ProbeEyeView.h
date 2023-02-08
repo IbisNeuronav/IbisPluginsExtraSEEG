@@ -12,7 +12,7 @@
 #include <vtkImageSlice.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkPolyData.h>
-#include <QVTKWidget.h>
+#include <QVTKRenderWidget.h>
 #include <vector>
 #include <vtkImageProperty.h>
 
@@ -78,7 +78,7 @@ namespace seeg {
         virtual ~ProbeEyeView();
 
 
-        QVTKWidget * GetProbeEyeWidget() {
+        QVTKRenderWidget * GetProbeEyeWidget() {
             return &m_ProbeEyeWidget;
         }
         ByteVolume::Pointer GetVolume();
@@ -120,7 +120,7 @@ namespace seeg {
         vtkSmartPointer<vtkImageSlice> m_ProbeEyeImageSlice;
         vtkSmartPointer<vtkImageResliceMapper> m_ProbeEyeImageResliceMapper;
         vtkSmartPointer<vtkRenderer> m_ProbeEyeRenderer;
-        QVTKWidget m_ProbeEyeWidget;
+        QVTKRenderWidget m_ProbeEyeWidget;
         vtkSmartPointer<ProbeEyeInteractorStyle> m_ProbeEyeInteractorStyle;
 
         // cursor

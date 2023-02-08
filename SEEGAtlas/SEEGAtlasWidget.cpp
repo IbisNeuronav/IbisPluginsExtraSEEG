@@ -36,6 +36,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QXmlStreamReader>
+#include <QDirIterator>
 
 // itk includes
 #include "itkImageRegionIterator.h"
@@ -137,11 +138,42 @@ SEEGAtlasWidget::~SEEGAtlasWidget()
 void SEEGAtlasWidget::SetPluginInterface(SEEGAtlasPluginInterface * interf)
 {
     m_pluginInterface = interf;
+
+    if( m_pluginInterface )
+    {
+        IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
+
+        // Read config file of the pointer in ./ibis/SEEGAtlasData/<Electrode>
+        QString foldername(QDir(ibisApi->GetConfigDirectory()).filePath("SEEGAtlasData"));
+
+        if( !QFile::exists(foldername) )
+        {
+            QDir().mkdir(foldername);
+        }
+
+        QDirIterator it(foldername, QStringList() << "*.xml", QDir::Files, QDirIterator::NoIteratorFlags);
+        while( it.hasNext() )
+        {
+            QFile cofigfile(it.next());
+            SerializerReader reader;
+            reader.SetFilename(cofigfile.fileName().toUtf8().data());
+            reader.Start();
+            SEEGElectrodeModel::Pointer elec = SEEGElectrodeModel::Pointer(new SEEGElectrodeModel());
+            elec->Serialize(&reader);
+            reader.Finish();
+
+            QString elname(elec->GetElectrodeName().c_str());
+            ui->comboBoxElectrodeType->addItem(elname, QVariant(elname));
+
+        }
+    }
 }
 
 void SEEGAtlasWidget::InitUI()
 {
     // Initialize ui components
+
+    
 
     // Some components are hidden to the user to simplify the UI
     // but they are kept for compatibility
@@ -2341,6 +2373,4 @@ void SEEGAtlasWidget::onRunBatchAnalysis(){
 		qDebug() << "File "<< fullFileNamePatients.c_str() << "not found.";
     }
 }
-
-
 

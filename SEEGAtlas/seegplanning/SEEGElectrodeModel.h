@@ -5,7 +5,7 @@
 #include "BasicTypes.h"
 #include "FileUtils.h"
 #include "MathUtils.h"
-
+#include "serializer.h"
 
 namespace seeg {
 
@@ -33,7 +33,7 @@ public:
         TEST
     };
 
-    string ElectrodeTypeEnumToString(SEEG_ELECTRODE_MODEL_TYPE type){
+    static string ElectrodeTypeEnumToString(SEEG_ELECTRODE_MODEL_TYPE type){
         switch(type){
         case MNI:
             return "MNI";
@@ -60,7 +60,7 @@ public:
         }
     }
 
-    SEEG_ELECTRODE_MODEL_TYPE ElectrodeTypeIndexToType(int index){ // RIZ: index MUST be the same as in the ui
+    static SEEG_ELECTRODE_MODEL_TYPE ElectrodeTypeIndexToType(int index){ // RIZ: index MUST be the same as in the ui
         switch(index){
         case 0:
             return MNI;
@@ -135,7 +135,10 @@ public:
         return type;
      }
 
+    virtual void Serialize(Serializer * ser);
+
 private:
+    std::string m_ElectrodeName;
     double m_TipContactHeight;
     double m_recordingRadius;
     double m_PegHeight; //RIZ -> find out REAL VALUES!!!
@@ -149,35 +152,40 @@ private:
 
 public:
     typedef mrilSmartPtr<SEEGElectrodeModel> Pointer;
+    //typedef SEEGElectrodeModel * Pointer;
 
     static Pointer New(SEEG_ELECTRODE_MODEL_TYPE type) {
+        std::string name = ElectrodeTypeEnumToString(type);
         switch(type) {
         case MNI:// diameter,  heightContact,  spacingInterContact,  numContacts,  tipOffset,  heightTip,  recRadious, heightPEG,  diameterPEG, type
-            return Pointer(new SEEGElectrodeModel(0.8, 0.5, 5, 9, 0, 1, 2.5, 2.5, 1.3, type)); // in diameter - use canula's diameter (0.8mm) instead of real diameter (0.254+0.0762) // RIZ2016 changed recording radius to 5mm
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 0.5, 5, 9, 0, 1, 2.5, 2.5, 1.3, type)); // in diameter - use canula's diameter (0.8mm) instead of real diameter (0.254+0.0762) // RIZ2016 changed recording radius to 5mm
         case DIXI10:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 3.5, 10, 0, 2, 2.5, 2.5, 1.3, type));
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 3.5, 10, 0, 2, 2.5, 2.5, 1.3, type));
         case DIXI15:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 3.5, 15, 0, 2, 2.5, 2.5, 1.3, type));
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 3.5, 15, 0, 2, 2.5, 2.5, 1.3, type));
         case DIXI18:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 3.5, 18, 0, 2, 2.5, 2.5, 1.3, type));
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 3.5, 18, 0, 2, 2.5, 2.5, 1.3, type));
         case STRIP:
-            return Pointer(new SEEGElectrodeModel(1, 2, 5, 8, -1, 2, 5, 0, 0, type)); // RIZ2016: FALTA - ADTECH??
+            return Pointer(new SEEGElectrodeModel(name, 1, 2, 5, 8, -1, 2, 5, 0, 0, type)); // RIZ2016: FALTA - ADTECH??
         case CONTACT:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 3.5, 1, -1, 2, 2.5, 0, 0, type)); //CONTACT is 1 DIXI contact - because tip point is actually center -> move electrode hegihtContact/2 (tipOffset=-1)
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 3.5, 1, -1, 2, 2.5, 0, 0, type)); //CONTACT is 1 DIXI contact - because tip point is actually center -> move electrode hegihtContact/2 (tipOffset=-1)
         case MM09A51:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 6.1, 9, 0, 2, 2.5, 2.5, 1.3, type)); 
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 6.1, 9, 0, 2, 2.5, 2.5, 1.3, type));
         case MM09A40:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 4.8, 9, 0, 2, 2.5, 2.5, 1.3, type));
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 4.8, 9, 0, 2, 2.5, 2.5, 1.3, type));
         case MM09A33:
-            return Pointer(new SEEGElectrodeModel(0.8, 2, 3.9, 9, 0, 2, 2.5, 2.5, 1.3, type));
+            return Pointer(new SEEGElectrodeModel(name, 0.8, 2, 3.9, 9, 0, 2, 2.5, 2.5, 1.3, type));
         case TEST:
         default:
-            return Pointer(new SEEGElectrodeModel(5, 1, 10, 3, 0.25, 0.5, 2.5, 20, 5, type));
+            return Pointer(new SEEGElectrodeModel(name, 5, 1, 10, 3, 0.25, 0.5, 2.5, 20, 5, type));
         }
     }
+    
+    SEEGElectrodeModel();
 
 protected:
-    SEEGElectrodeModel(double contactDiameter, double contactHeight, double spacing, int numContacts, double tipOffset, double tipHeight, double recRadious,double pegHeight, double pegDiameter, SEEG_ELECTRODE_MODEL_TYPE type){
+    SEEGElectrodeModel(std::string name, double contactDiameter, double contactHeight, double spacing, int numContacts, double tipOffset, double tipHeight, double recRadious,double pegHeight, double pegDiameter, SEEG_ELECTRODE_MODEL_TYPE type){
+        m_ElectrodeName = name;
         m_TipContactHeight = tipHeight;
         m_recordingRadius = recRadious; // CHECK VALUES - might depend based on electrode type!!!
         m_PegHeight = pegHeight;
@@ -191,6 +199,14 @@ protected:
     }
 
 public:
+    void SetElectrodeName(std::string name) {
+        m_ElectrodeName = name;
+    }
+
+    std::string GetElectrodeName() {
+        return m_ElectrodeName;
+    }
+
     void SetRecordingRadius(double recordingRadius) {
         m_recordingRadius = recordingRadius;
     }
@@ -265,5 +281,8 @@ public:
 
 };
 
+ObjectSerializationHeaderMacro(SEEGElectrodeModel);
+
 }
+
 #endif // SEEGELECTRODE_H
