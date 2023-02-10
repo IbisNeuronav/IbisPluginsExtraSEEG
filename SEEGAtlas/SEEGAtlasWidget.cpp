@@ -69,6 +69,8 @@ SEEGAtlasWidget::SEEGAtlasWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_ConfigurationDir = "";
+
     // electrode colors - Create the color map
 //    vector <QColor> posColors;
     m_PosColors.push_back(QColor("green"));m_PosColors.push_back(QColor("purple")); m_PosColors.push_back(QColor("red"));m_PosColors.push_back( QColor("blue"));
@@ -98,14 +100,7 @@ SEEGAtlasWidget::SEEGAtlasWidget(QWidget *parent) :
     m_SpacingResolution = 0.5; //RIZ: HARDCODED FOR NOW!!!! see how to define!
 
     // Assign default model (the one in the combobox default)
-    m_ElectrodeModel = SEEGElectrodeModel::New(SEEGElectrodeModel::MNI);
-
-    // Create Cohort object
-    m_SEEGElectrodesCohort = SEEGElectrodesCohort::New();
-    m_SEEGElectrodesCohort->SetElectrodeModel(m_ElectrodeModel->GetElectrodeType());
-    m_SEEGElectrodesCohort->SetSpacingResolution(m_SpacingResolution);
-
-    this->InitUI();
+    m_ElectrodeModel = nullptr;
 
     //Create Active Plan
     CreateActivePlan();
@@ -138,6 +133,17 @@ SEEGAtlasWidget::~SEEGAtlasWidget()
 void SEEGAtlasWidget::SetPluginInterface(SEEGAtlasPluginInterface * interf)
 {
     m_pluginInterface = interf;
+    this->InitUI();
+}
+
+void SEEGAtlasWidget::InitUI()
+{
+    // Initialize ui components
+
+    // Create Cohort object
+    m_SEEGElectrodesCohort = SEEGElectrodesCohort::New();
+    m_SEEGElectrodesCohort->SetElectrodeModel(m_ElectrodeModel);
+    m_SEEGElectrodesCohort->SetSpacingResolution(m_SpacingResolution);
 
     if( m_pluginInterface )
     {
@@ -151,6 +157,7 @@ void SEEGAtlasWidget::SetPluginInterface(SEEGAtlasPluginInterface * interf)
             QDir().mkdir(foldername);
         }
 
+        m_ConfigurationDir = foldername;
         QDirIterator it(foldername, QStringList() << "*.xml", QDir::Files, QDirIterator::NoIteratorFlags);
         while( it.hasNext() )
         {
@@ -158,22 +165,20 @@ void SEEGAtlasWidget::SetPluginInterface(SEEGAtlasPluginInterface * interf)
             SerializerReader reader;
             reader.SetFilename(cofigfile.fileName().toUtf8().data());
             reader.Start();
-            SEEGElectrodeModel::Pointer elec = SEEGElectrodeModel::Pointer(new SEEGElectrodeModel());
+            SEEGElectrodeModel::Pointer elec = SEEGElectrodeModel::New();
             elec->Serialize(&reader);
             reader.Finish();
 
-            QString elname(elec->GetElectrodeName().c_str());
+            m_ElectrodeModelList.push_back(elec);
+
+            QString elname(elec->GetElectrodeId().c_str());
             ui->comboBoxElectrodeType->addItem(elname, QVariant(elname));
 
         }
+
+        m_ElectrodeModel = m_ElectrodeModelList[ui->comboBoxElectrodeType->currentIndex()];
     }
-}
 
-void SEEGAtlasWidget::InitUI()
-{
-    // Initialize ui components
-
-    
 
     // Some components are hidden to the user to simplify the UI
     // but they are kept for compatibility
@@ -190,13 +195,6 @@ void SEEGAtlasWidget::InitUI()
         ui->comboBoxPlanSelect->addItem(QString("Elect ") + QString::number(iElec + 1));
     }
 
-    //m_ElectrodeModel is not assigned anywhere, this may lead to error
-    double sliderPos = m_ElectrodeModel->GetContactDiameter() / 10.0 * 100.0;
-    ui->horizontalSliderCylRadius->setValue(sliderPos);
-    ui->horizontalSliderCylinderLength->setValue(m_ElectrodeModel->GetElectrodeHeight());
-    ui->lineEditCylRadius->setText(QString::number(m_ElectrodeModel->GetContactDiameter()));
-    ui->lineEditCylinderLength->setText(QString::number(m_ElectrodeModel->GetElectrodeHeight()));
-
     //Set the electrode diameter and length as read-only, as they are specified by the manufacturer
     ui->lineEditCylRadius->setReadOnly(true);
     ui->lineEditCylinderLength->setReadOnly(true);
@@ -211,6 +209,41 @@ void SEEGAtlasWidget::InitUI()
 
     //Fill the combobox with the images whose contour surface will be generated
     FillComboBoxBrainSegmentation();
+
+    this->UpdateConfigurationFromUi();
+    this->UpdateUi();
+}
+
+void SEEGAtlasWidget::UpdateUi()
+{
+    // update UI according to the current electrode model
+    if( m_ElectrodeModel )
+    {
+        //m_ElectrodeModel is not assigned anywhere, this may lead to error
+        double sliderPos = m_ElectrodeModel->GetContactDiameter() / 10.0 * 100.0;
+        ui->horizontalSliderCylRadius->setValue(sliderPos);
+        ui->horizontalSliderCylinderLength->setValue(m_ElectrodeModel->GetElectrodeHeight());
+        ui->lineEditCylRadius->setText(QString::number(m_ElectrodeModel->GetContactDiameter()));
+        ui->lineEditCylinderLength->setText(QString::number(m_ElectrodeModel->GetElectrodeHeight()));
+    }
+}
+
+void SEEGAtlasWidget::UpdateConfigurationFromUi()
+{
+    m_ElectrodeModel = m_ElectrodeModelList.at(ui->comboBoxElectrodeType->currentIndex());
+
+    //TODO add cohort update
+}
+
+void SEEGAtlasWidget::UpdateUiFromConfiguration()
+{
+    for( int i = 0; i < m_ElectrodeModelList.size(); i++ )
+    {
+        if( m_ElectrodeModel->GetElectrodeId().compare(m_ElectrodeModelList[i]->GetElectrodeId()) == 0 )
+        {
+            ui->comboBoxElectrodeType->setCurrentIndex(i);
+        }
+    }
 }
 
 void SEEGAtlasWidget::FillComboBoxBrainSegmentation() {
@@ -272,9 +305,7 @@ void SEEGAtlasWidget::OnObjectRemovedSlot(int imageObjectId)
 void SEEGAtlasWidget::CreateAllElectrodes() {
     qDebug() << "Entering CreateAllElectrodes";
     // Init saved plan cylinders
-    int electTypeIndex = ui->comboBoxElectrodeType->currentIndex();
-    SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE elecType = m_ElectrodeModel->ElectrodeTypeIndexToType(electTypeIndex);
-    m_ElectrodeModel = SEEGElectrodeModel::New(elecType);
+    this->UpdateConfigurationFromUi(); //TODO check if needed?
     // Delete ALL electrodes
     Application::GetInstance().GetSceneManager()->RemoveAllChildrenObjects(this->m_SavedPlansObject);
     // Create each electrode
@@ -387,8 +418,7 @@ void SEEGAtlasWidget::createAllElectrodesWithSelectedContactsChannels(const stri
 	qDebug() << "Entering createAllElectrodesWithSelectedContactsChannels - "<< whichSelected.c_str();
     // Init saved plan cylinders
     int electTypeIndex = ui->comboBoxElectrodeType->currentIndex();
-    SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE elecType = m_ElectrodeModel->ElectrodeTypeIndexToType(electTypeIndex);
-    m_ElectrodeModel = SEEGElectrodeModel::New(elecType);
+    this->UpdateConfigurationFromUi();
     double electrodeLength = ui->lineEditCylinderLength->text().toFloat();
 
     // Delete ALL electrodes
@@ -821,7 +851,7 @@ void SEEGAtlasWidget::addElectrodeToCohort(int iElec) {
         }
     }
     //Create electrode
-    ElectrodeInfo::Pointer electrode = ElectrodeInfo::New(m_AllPlans[iElec].entryPoint, m_AllPlans[iElec].targetPoint, m_ElectrodeModel->GetElectrodeType(), m_AllPlans[iElec].name);
+    ElectrodeInfo::Pointer electrode = ElectrodeInfo::New(m_AllPlans[iElec].entryPoint, m_AllPlans[iElec].targetPoint, m_ElectrodeModel, m_AllPlans[iElec].name);
     //Add contacts to electrode
     vector<Point3D> allContactsCentralPt;
     m_ElectrodeModel->CalcAllContactPositions(electrode->m_TargetPointWorld, electrode->m_EntryPointWorld, allContactsCentralPt, onlyInsdeBrain); //RIZ20151227 corrected - target and entry swaped
@@ -837,8 +867,8 @@ void SEEGAtlasWidget::addElectrodeToCohort(int iElec, ElectrodeInfo::Pointer ele
     //SEEGElectrodesCohort::Pointer electrodesCohort = GetSEEGElectrodesCohort();
     m_SEEGElectrodesCohort->AddTrajectoryToBestCohort(m_AllPlans[iElec].name, electrode, iElec); //RIZ20151124 - added
 
-	qDebug() << " Electrode Type: " << m_ElectrodeModel->ElectrodeTypeEnumToString(electrode->GetElectrodeModelType()).c_str();
-    m_SEEGElectrodesCohort->SetElectrodeModel(electrode->GetElectrodeModelType());
+	qDebug() << " Electrode Type: " << m_ElectrodeModel->GetElectrodeId().c_str();
+    m_SEEGElectrodesCohort->SetElectrodeModel(electrode->GetElectrodeModel());
 }
 
 void SEEGAtlasWidget::onFindAnatLocation(){
@@ -865,8 +895,8 @@ void SEEGAtlasWidget::onFindAnatLocation(seeg::ElectrodeInfo::Pointer electrode)
     FloatVolume::Pointer anatLabelsVol = openAtlasVolume();
     if (anatLabelsVol.IsNotNull()) {
         map <int,string> labelsMap = ReadAtlasLabels();
-		qDebug() << " Electrode Type: " <<  m_ElectrodeModel->ElectrodeTypeEnumToString(electrode->GetElectrodeModelType()).c_str();
-        SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModelType()); //volume is only to have size,
+		qDebug() << " Electrode Type: " <<  m_ElectrodeModel->GetElectrodeId().c_str();
+        SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModel()); //volume is only to have size,
 
         bool useCylinder = ui->checkBoxUseCylinder->isChecked();
 
@@ -941,8 +971,8 @@ void SEEGAtlasWidget::onFindChannelsAnatLocation(seeg::ElectrodeInfo::Pointer el
 	qDebug() << "onFindChannelsAnatLocation - number of contacts: "<<nContacts;
     FloatVolume::Pointer anatLabelsVol = openAtlasVolume();
    if (anatLabelsVol.IsNotNull()) {
-	   qDebug() << " Electrode Type: " <<  m_ElectrodeModel->ElectrodeTypeEnumToString(electrode->GetElectrodeModelType()).c_str();
-        SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModelType()); //volume is only to have size,
+	   qDebug() << " Electrode Type: " <<  m_ElectrodeModel->GetElectrodeId().c_str();
+        SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModel()); //volume is only to have size,
         // Find anatomical location for each bipolar channel of the eletrode (nChannels = nContacts-1)
         bool useCylinder = ui->checkBoxUseCylinder->isChecked();
         map <int,string> labelsMap = ReadAtlasLabels();
@@ -1183,21 +1213,21 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
      // cleanup electrodes
      ResetElectrodes();
 
-     m_SEEGElectrodesCohort = SEEGElectrodesCohort::New(m_ElectrodeModel->GetElectrodeType(), m_SpacingResolution); // create again to remove any previous electrode
+     m_SEEGElectrodesCohort = SEEGElectrodesCohort::New(m_ElectrodeModel, m_SpacingResolution); // create again to remove any previous electrode
      //SEEGElectrodesCohort::Pointer pathCohortObj = GetSEEGElectrodesCohort();
      vector<string> electrodeNames;
      int iElec;
      char delimiter(DELIMITER_TRAJFILE);
      // 1. Load Cohort
      string filename = dirName.toStdString() + "/"+ string(FILE_RESULTS_TRAJ_BEST) + string(FILE_POS_FIX);
-     bool status = m_SEEGElectrodesCohort->LoadSEEGBestCohortDataFromFile(filename, delimiter);
+     bool status = m_SEEGElectrodesCohort->LoadSEEGBestCohortDataFromFile(filename, delimiter, m_ElectrodeModelList);
      if (status==false) { // No trajectories found - likely because wrong delimiter (RIZ2016)
-         status = m_SEEGElectrodesCohort->LoadSEEGBestCohortDataFromFile (filename, DELIMITER_TRAJFILE_2OPTION);
+         status = m_SEEGElectrodesCohort->LoadSEEGBestCohortDataFromFile (filename, DELIMITER_TRAJFILE_2OPTION, m_ElectrodeModelList);
      }
      if (status==true){
          electrodeNames = m_SEEGElectrodesCohort->GetElectrodeNames();
          // Get electrode type from m_SEEGElectrodesCohort
-         m_ElectrodeModel  = SEEGElectrodeModel::New(m_SEEGElectrodesCohort->GetElectrodeType());
+         m_ElectrodeModel  = m_SEEGElectrodesCohort->GetElectrodeModel();
          m_SpacingResolution = m_SEEGElectrodesCohort->GetSpacingResolution();
 
          //order in SEEGplanningwidget list MUST be the same!
@@ -1212,8 +1242,8 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          for (elecIt = bestCohort.begin(), iElec=0; elecIt != bestCohort.end(); elecIt++, iElec++) {
              string elName = elecIt->first;
              ElectrodeInfo::Pointer electrode = elecIt->second;
-             filename = dirName.toStdString() + "/"+ string(FILE_RESULTS_TRAJ_GRAL)+ elName  + string(FILE_POS_FIX);
-             status = electrode->LoadElectrodeDataFromFile (filename, delimiter);
+             filename = dirName.toStdString() + "/"+ string(FILE_RESULTS_TRAJ_GRAL)+ elName  + string(FILE_POS_FIX); 
+             status = electrode->LoadElectrodeDataFromFile (filename, delimiter, m_ElectrodeModelList);
              m_AllPlans[iElec].isTargetSet = true;
              m_AllPlans[iElec].isEntrySet = true;
              m_AllPlans[iElec].targetPoint = bestCohort[elName]->GetTargetPoint();
@@ -1225,8 +1255,17 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          }
 
          //Update type of electrode on list
-         int indexType = m_ElectrodeModel->ElectrodeTypeEnumToIndex(m_SEEGElectrodesCohort->GetElectrodeType());
-         ui->comboBoxElectrodeType->setCurrentIndex(indexType);
+         //int indexType = m_ElectrodeModel->ElectrodeTypeEnumToIndex(m_SEEGElectrodesCohort->GetElectrodeType()); //TODO: replace by get electrode
+         //ui->comboBoxElectrodeType->setCurrentIndex(indexType);
+         for( int i = 0; i < m_ElectrodeModelList.size(); i++ )
+         {
+             if(m_ElectrodeModel->GetElectrodeId().compare(m_ElectrodeModelList[i]->GetElectrodeId()) == 0)
+             {
+                 ui->comboBoxElectrodeType->setCurrentIndex(i);
+
+             }
+         }
+         
          // this->UpdatePlan(iElec);
          // CreateActivePlan();
          // CreateAllElectrodes();
@@ -1255,9 +1294,9 @@ void SEEGAtlasWidget::onLoad1Plan() {
 
 void SEEGAtlasWidget::onLoadOnePlanFromCSVFile(const int iElec, const string filename) {
     ElectrodeInfo::Pointer electrode = ElectrodeInfo::New();
-    bool status = electrode->LoadElectrodeDataFromFile (filename, DELIMITER_TRAJFILE);
+    bool status = electrode->LoadElectrodeDataFromFile (filename, DELIMITER_TRAJFILE, m_ElectrodeModelList);
     if (status==false) {
-        status = electrode->LoadElectrodeDataFromFile (filename, DELIMITER_TRAJFILE_2OPTION);
+        status = electrode->LoadElectrodeDataFromFile (filename, DELIMITER_TRAJFILE_2OPTION, m_ElectrodeModelList);
     }
     if (status==true){
         //order in SEEGplanningwidget list MUST be the same!
@@ -1274,11 +1313,12 @@ void SEEGAtlasWidget::onLoadOnePlanFromCSVFile(const int iElec, const string fil
         onUpdateElectrode(iElec, electrode);
         //this->DisplaySavedPlan(iElec); //it was not here before
         // this->RefreshPlanCoords(iElec, elName);
-        m_ElectrodeModel  = SEEGElectrodeModel::New(electrode->GetElectrodeModelType());
+        m_ElectrodeModel  = electrode->GetElectrodeModel();
         //Update type of electrode on list
-        int indexType = m_ElectrodeModel->ElectrodeTypeEnumToIndex(m_ElectrodeModel->GetElectrodeType());
-		qDebug() << electrodeName.c_str() << " Electrode Type: " << electrode->GetElectrodeModelType()<< " - "<< m_ElectrodeModel->ElectrodeTypeEnumToString(m_ElectrodeModel->GetElectrodeType()).c_str() << " index: " <<indexType << endl;
-        ui->comboBoxElectrodeType->setCurrentIndex(indexType);
+        this->UpdateUiFromConfiguration();
+
+		qDebug() << electrodeName.c_str() << " Electrode Type: " << electrode->GetElectrodeName().c_str() << " - " << m_ElectrodeModel->GetElectrodeName().c_str() << " index: " << ui->comboBoxElectrodeType->currentIndex() << endl;
+        
 
     // this->UpdatePlan(iElec);
    // CreateActivePlan();
@@ -1462,24 +1502,18 @@ FloatVolume::Pointer SEEGAtlasWidget::openAtlasVolume(){
 
 
 // ELECTRODE TYPE
-void SEEGAtlasWidget::onChangeElectrodeType(QString newType){
-    // keep only up to space of name
-    string electTypeStr;
-    stringstream newTypeStr(newType.toStdString());
-    getline(newTypeStr, electTypeStr, ' ');
-    SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electType = m_ElectrodeModel->ElectrodeTypeStringToEnum(electTypeStr);
-    m_ElectrodeModel  = SEEGElectrodeModel::New(electType); // reset to the new electrode model
-    double sliderPos = m_ElectrodeModel->GetContactDiameter() / 10.0 *100.0;
-    ui->horizontalSliderCylRadius->setValue(sliderPos);
-    ui->horizontalSliderCylinderLength->setValue(m_ElectrodeModel->GetElectrodeHeight());
-    ui->lineEditCylRadius->setText(QString::number(m_ElectrodeModel->GetContactDiameter()));
-    ui->lineEditCylinderLength->setText(QString::number(m_ElectrodeModel->GetElectrodeHeight()));
+void SEEGAtlasWidget::on_comboBoxElectrodeType_currentIndexChanged(int index){
+    
+    m_ElectrodeModel = m_ElectrodeModelList.at(index);
+    this->UpdateUi();
 
     //SEEGElectrodesCohort::Pointer pathCohortObj = GetSEEGElectrodesCohort();
-    m_SEEGElectrodesCohort->SetElectrodeModel(electType);
+    m_SEEGElectrodesCohort->SetElectrodeModel(m_ElectrodeModel);
 
     // Create visual electrodes again
     CreateAllElectrodes();
+
+    
 }
 
 
@@ -2225,7 +2259,7 @@ void SEEGAtlasWidget::ResetElectrodes(){
     }
     RefreshAllPlanCoords();
     //Clean
-    m_SEEGElectrodesCohort = SEEGElectrodesCohort::New(m_ElectrodeModel->GetElectrodeType(), m_SpacingResolution); // create again to remove any previous electrode
+    m_SEEGElectrodesCohort = SEEGElectrodesCohort::New(m_ElectrodeModel, m_SpacingResolution); // create again to remove any previous electrode
     m_ElectrodesNames.clear();
     m_VectorContactsTables.clear();
 }
@@ -2373,4 +2407,3 @@ void SEEGAtlasWidget::onRunBatchAnalysis(){
 		qDebug() << "File "<< fullFileNamePatients.c_str() << "not found.";
     }
 }
-

@@ -37,11 +37,11 @@ class SEEGElectrodesCohort
           */
          SEEGElectrodesCohort();
          SEEGElectrodesCohort(FloatVolume::Pointer templateVolume);
-         SEEGElectrodesCohort(SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type, float spacing);
+         SEEGElectrodesCohort(SEEGElectrodeModel::Pointer model, float spacing);
 
          static Pointer New() {return Pointer(new SEEGElectrodesCohort());}
          static Pointer New(FloatVolume::Pointer templateVolume) {return Pointer(new SEEGElectrodesCohort(templateVolume));} //to initialize the m_PipelineTrajectory object
-         static Pointer New(SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type, float spacing) {return Pointer(new SEEGElectrodesCohort(type, spacing));} //to initialize the m_ElectrodeModel object with appropriate electrode model
+         static Pointer New(SEEGElectrodeModel::Pointer model, float spacing) {return Pointer(new SEEGElectrodesCohort(model, spacing));} //to initialize the m_ElectrodeModel object with appropriate electrode model
 
          virtual ~SEEGElectrodesCohort();
 
@@ -83,18 +83,16 @@ class SEEGElectrodesCohort
 
          vector<string> GetElectrodeNames();
 
-         SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE GetElectrodeType();
-
          float GetSpacingResolution();
 
          void SetSpacingResolution(const float spacing);
 
          SEEGElectrodeModel::Pointer GetElectrodeModel();
 
-         void SetElectrodeModel(SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType);
+         void SetElectrodeModel(SEEGElectrodeModel::Pointer electrodeModel);
 
          /*** Load & Save ***/
-         bool LoadSEEGBestCohortDataFromFile (const string& filename, char delimiter);
+         bool LoadSEEGBestCohortDataFromFile (const string& filename, char delimiter, std::vector<seeg::SEEGElectrodeModel::Pointer> modelList);
 
          void SaveSEEGBestCohortDataToFile(const string& filename, char delimiter);
 

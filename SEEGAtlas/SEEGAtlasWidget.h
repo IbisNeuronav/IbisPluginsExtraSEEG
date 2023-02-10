@@ -59,6 +59,7 @@ private:
     vector<string> m_ElectrodesNames;
 
     seeg::SEEGElectrodeModel::Pointer m_ElectrodeModel;
+    std::vector< seeg::SEEGElectrodeModel::Pointer > m_ElectrodeModelList;
 
     float m_SpacingResolution; //RIZ: this might be unnecessary...
 
@@ -73,7 +74,7 @@ private slots:
     // Dataset management and visualization presets
     void onLoadSEEGDatasetsFromDir();
     void onLoadSEEGDatasetsFromDir(QString dirName);
-    void onChangeElectrodeType(QString newType);
+    void on_comboBoxElectrodeType_currentIndexChanged(int index);
     void OnObjectAddedSlot(int imageObjectId);
     void OnObjectRemovedSlot(int imageObjectId);
 
@@ -139,6 +140,10 @@ private:
    int getLocationValue(seeg::Point3D point);
 
    void InitUI();
+   void UpdateUi();
+
+   void UpdateConfigurationFromUi();
+   void UpdateUiFromConfiguration();
 
     // Create and Display trajectory cylinders
    // void DisplaySavedPlan(int iElec);
@@ -186,6 +191,8 @@ private:
     void ResetElectrodes();
 
     SEEGAtlasPluginInterface * m_pluginInterface;
+
+    QString m_ConfigurationDir;
 
     // Atlas
     seeg::FloatVolume::Pointer openAtlasVolume();

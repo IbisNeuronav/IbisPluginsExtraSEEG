@@ -6,17 +6,35 @@ namespace seeg {
 
     SEEGElectrodeModel::SEEGElectrodeModel() 
     {
-        m_ElectrodeName = "";
-        m_TipContactHeight = 0;
-        m_recordingRadius = 0; // CHECK VALUES - might depend based on electrode type!!!
-        m_PegHeight = 0;
-        m_PegDiameter = 0;
-        m_ContactDiameter = 0;
-        m_ContactHeight = 0;
-        m_ContactSpacing = 0;
-        m_NumContacts = 0;
-        m_TipOffset = 0;
+        double contactDiameter = 0.8;
+        double contactHeight = 0.5;
+        double spacing = 5;
+        int numContacts = 9;
+        double tipOffset = 0;
+        double tipHeight = 1;
+        double recRadious = 2.5;
+        double pegHeight = 2.5;
+        double pegDiameter = 1.3;
+
+        // default MNI
+        m_ElectrodeId = "MNI";
+        m_ElectrodeName = "MNI electrodes (0.8mm^2)";
+        m_TipContactHeight = tipHeight;
+        m_recordingRadius = recRadious; // CHECK VALUES - might depend based on electrode type!!!
+        m_PegHeight = pegHeight;
+        m_PegDiameter = pegDiameter;
+        m_ContactDiameter = contactDiameter;
+        m_ContactHeight = contactHeight;
+        m_ContactSpacing = spacing;
+        m_NumContacts = numContacts;
+        m_TipOffset = tipOffset;
     }
+
+    SEEGElectrodeModel::Pointer SEEGElectrodeModel::New()
+    {
+        return SEEGElectrodeModel::Pointer(new SEEGElectrodeModel());
+    }
+
 
     Point3D SEEGElectrodeModel::SEEGCalcContactPosition(unsigned int contact_index, Point3D electrodeTip, Point3D entryPoint, bool onlyInsideBrain) {
         //overlays CalcContactPosition from ElectrodeModel to consider first contact different size
@@ -187,6 +205,7 @@ namespace seeg {
 
     void SEEGElectrodeModel::Serialize(Serializer * ser)
     {
+        ::Serialize(ser, "ElectrodeId", m_ElectrodeId);
         ::Serialize(ser, "ElectrodeName", m_ElectrodeName);
         ::Serialize(ser, "TipContactHeight", m_TipContactHeight);
         ::Serialize(ser, "RecordingRadius", m_recordingRadius);

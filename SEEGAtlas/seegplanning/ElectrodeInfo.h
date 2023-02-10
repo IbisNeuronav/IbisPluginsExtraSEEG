@@ -46,7 +46,7 @@ namespace seeg {
         seeg::Vector3D_lf m_ElectrodeVectorWorld;
 
         /** electrode model type**/
-        seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE m_ElectrodeType;
+        seeg::SEEGElectrodeModel::Pointer m_ElectrodeModel;
 
         /** Electrode's Name**/
         std::string m_ElectrodeName;
@@ -68,16 +68,16 @@ namespace seeg {
          * @param targetWorld reference to the electrodeType point's world coordinates
          * @return a smart pointer to the newly created ElectrodeInfo instance
          */
-        static Pointer New(const seeg::Point3D& entryPointWorld, const seeg::Point3D& targetWorld, const seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType, std::string electrodeName) {
-            return Pointer(new ElectrodeInfo(entryPointWorld, targetWorld, electrodeType, electrodeName));
+        static Pointer New(const seeg::Point3D& entryPointWorld, const seeg::Point3D& targetWorld, const seeg::SEEGElectrodeModel::Pointer electrodeModel, std::string electrodeName) {
+            return Pointer(new ElectrodeInfo(entryPointWorld, targetWorld, electrodeModel, electrodeName));
         }
 
-        static Pointer New(const seeg::Point3D& entryPointWorld, const seeg::Point3D& targetWorld, const seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType) {
-            return Pointer(new ElectrodeInfo(entryPointWorld, targetWorld, electrodeType, ""));
+        static Pointer New(const seeg::Point3D& entryPointWorld, const seeg::Point3D& targetWorld, const seeg::SEEGElectrodeModel::Pointer electrodeModel) {
+            return Pointer(new ElectrodeInfo(entryPointWorld, targetWorld, electrodeModel, ""));
         }
 
         static Pointer New(const seeg::Point3D& entryPointWorld, const seeg::Point3D& targetWorld) {
-            return Pointer(new ElectrodeInfo(entryPointWorld, targetWorld, SEEGElectrodeModel::MNI, ""));
+            return Pointer(new ElectrodeInfo(entryPointWorld, targetWorld, SEEGElectrodeModel::New(), ""));
         }
 
         static Pointer New() {
@@ -96,9 +96,9 @@ namespace seeg {
 
         void SetEntryPoint(seeg::Point3D entryPoint);
 
-        seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE GetElectrodeModelType();
+        seeg::SEEGElectrodeModel::Pointer GetElectrodeModel();
 
-        void SetElectrodeModelType(seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType);
+        void SetElectrodeModel(seeg::SEEGElectrodeModel::Pointer electrodeModel);
 
         seeg::Vector3D_lf GetElectrodeVectorWorld();
 
@@ -139,7 +139,7 @@ namespace seeg {
         void ExtrapolateEntryPoint(Point3D& target, Point3D& entryIn, Point3D& entryOut, const float lenExtra);
 
         /*** Load & Save ***/
-        bool LoadElectrodeDataFromFile (const string& filename, const char delimiter);
+        bool LoadElectrodeDataFromFile (const string& filename, const char delimiter, std::vector<seeg::SEEGElectrodeModel::Pointer> modelList);
 
         void SaveElectrodeDataToFile(const string& filename, const char delimiter);
 
@@ -148,7 +148,7 @@ namespace seeg {
         /*** Constructors / Destructors ***/
         ElectrodeInfo();
 
-        ElectrodeInfo(const Point3D& entryPointWorld, const Point3D& targetPointWorld, const SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType, std::string electrodeName);
+        ElectrodeInfo(const Point3D& entryPointWorld, const Point3D& targetPointWorld, const SEEGElectrodeModel::Pointer electrodeModel, std::string electrodeName);
 
     private:
 

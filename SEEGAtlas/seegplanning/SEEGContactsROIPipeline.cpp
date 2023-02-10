@@ -19,35 +19,35 @@
 
 namespace seeg {
 /**** CONSTRUCTORS / DESTRUCTOR ****/
-SEEGContactsROIPipeline::SEEGContactsROIPipeline (const string& templateVolumeFile, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) {
+SEEGContactsROIPipeline::SEEGContactsROIPipeline (const string& templateVolumeFile, SEEGElectrodeModel::Pointer electrodeModel) {
     m_TemplateVolume = ReadFloatVolume(templateVolumeFile);
-    m_ElectrodeModel = SEEGElectrodeModel::New(type);
+    m_ElectrodeModel = electrodeModel;
     this->InitPipeline();
 }
 
-SEEGContactsROIPipeline::SEEGContactsROIPipeline (FloatVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) {
+SEEGContactsROIPipeline::SEEGContactsROIPipeline (FloatVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel) {
     m_TemplateVolume = templateVolume;
-    m_ElectrodeModel = SEEGElectrodeModel::New(type);
+    m_ElectrodeModel = electrodeModel;
     this->InitPipeline();
 }
 
-SEEGContactsROIPipeline::SEEGContactsROIPipeline (IntVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) {
+SEEGContactsROIPipeline::SEEGContactsROIPipeline (IntVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel) {
     typedef CastImageFilter<IntVolume, FloatVolume> CastFilterType;
     CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput(templateVolume);
     castFilter->Update();
     m_TemplateVolume = castFilter->GetOutput();
-    m_ElectrodeModel = SEEGElectrodeModel::New(type);
+    m_ElectrodeModel = electrodeModel;
     this->InitPipeline();
 }
 
-SEEGContactsROIPipeline::SEEGContactsROIPipeline (ByteVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) {
+SEEGContactsROIPipeline::SEEGContactsROIPipeline (ByteVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel) {
     typedef CastImageFilter<ByteVolume, FloatVolume> CastFilterType;
     CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput(templateVolume);
     castFilter->Update();
     m_TemplateVolume = castFilter->GetOutput();
-    m_ElectrodeModel = SEEGElectrodeModel::New(type);
+    m_ElectrodeModel = electrodeModel;
     this->InitPipeline();
 }
 
