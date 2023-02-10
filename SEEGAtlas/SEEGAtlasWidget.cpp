@@ -153,6 +153,7 @@ void SEEGAtlasWidget::InitUI()
         // Read config file of the pointer in ./ibis/SEEGAtlasData/<Electrode>
         QString foldername(QDir(ibisApi->GetConfigDirectory()).filePath("SEEGAtlasData"));
 
+        // create config directory if it does not exist
         if( !QFile::exists(foldername) )
         {
             QDir().mkdir(foldername);
@@ -174,7 +175,25 @@ void SEEGAtlasWidget::InitUI()
 
             QString elname(elec->GetElectrodeId().c_str());
             ui->comboBoxElectrodeType->addItem(elname, QVariant(elname));
+        }
 
+        // if no electrode config file was found
+        if( m_ElectrodeModelList.size() == 0 )
+        {
+            // create default electrode model (MNI) and add config file to config dir
+            SEEGElectrodeModel::Pointer elec = SEEGElectrodeModel::New();
+            QString tempFilename = QDir(foldername).filePath(elec->GetElectrodeId().c_str()) + ".xml";
+            SerializerWriter writer;
+            writer.SetFilename(tempFilename.toUtf8().data());
+            writer.Start();
+
+            elec->Serialize(&writer);
+            writer.Finish();
+            
+            m_ElectrodeModelList.push_back(elec);
+
+            QString elname(elec->GetElectrodeId().c_str());
+            ui->comboBoxElectrodeType->addItem(elname, QVariant(elname));
         }
 
         m_ElectrodeModel = m_ElectrodeModelList[ui->comboBoxElectrodeType->currentIndex()];
