@@ -891,8 +891,8 @@
    <slot>onLoadPlanningFromDirectory()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>222</x>
-     <y>454</y>
+     <x>206</x>
+     <y>494</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
@@ -908,7 +908,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>454</y>
+     <y>494</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
@@ -923,8 +923,8 @@
    <slot>onPlanSelect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>326</y>
+     <x>328</x>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
@@ -940,7 +940,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>425</y>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
@@ -956,7 +956,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>396</y>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
@@ -971,28 +971,12 @@
    <slot>onSetTargetPointFromCursor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>396</y>
+     <x>328</x>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
      <y>431</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>comboBoxElectrodeType</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>SEEGAtlasWidget</receiver>
-   <slot>onChangeElectrodeType(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>347</x>
-     <y>91</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>292</x>
-     <y>614</y>
     </hint>
    </hints>
   </connection>
@@ -1003,8 +987,8 @@
    <slot>onSetEntryPointFromCursor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>425</y>
+     <x>328</x>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>302</x>
@@ -1035,8 +1019,8 @@
    <slot>onLoad1Plan()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>454</y>
+     <x>328</x>
+     <y>494</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -1052,7 +1036,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>326</y>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -1084,7 +1068,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>959</y>
+     <y>957</y>
     </hint>
     <hint type="destinationlabel">
      <x>302</x>
@@ -1100,7 +1084,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>347</x>
-     <y>959</y>
+     <y>957</y>
     </hint>
     <hint type="destinationlabel">
      <x>173</x>
@@ -1147,8 +1131,8 @@
    <slot>onFindAnatLocation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>333</x>
-     <y>518</y>
+     <x>178</x>
+     <y>558</y>
     </hint>
     <hint type="destinationlabel">
      <x>317</x>
@@ -1163,8 +1147,8 @@
    <slot>onFindChannelsAnatLocation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>518</y>
+     <x>396</x>
+     <y>558</y>
     </hint>
     <hint type="destinationlabel">
      <x>317</x>
@@ -1179,8 +1163,8 @@
    <slot>onGetLocationValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>139</x>
-     <y>854</y>
+     <x>159</x>
+     <y>894</y>
     </hint>
     <hint type="destinationlabel">
      <x>290</x>
@@ -1195,8 +1179,8 @@
    <slot>onShowContactsChannelsTable(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>351</x>
-     <y>548</y>
+     <x>393</x>
+     <y>588</y>
     </hint>
     <hint type="destinationlabel">
      <x>290</x>
@@ -1212,7 +1196,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>988</y>
+     <y>1017</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>
