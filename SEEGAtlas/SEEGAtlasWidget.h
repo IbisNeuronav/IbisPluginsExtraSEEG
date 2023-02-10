@@ -150,7 +150,7 @@ private:
    // void DisplayAllSavedPlan();
    // void SetTrajectoryCursor(seeg::Point3D targetPoint,seeg::Point3D entryPoint);
     void FillComboBoxBrainSegmentation();
-    void CreateAllElectrodes();
+    void CreateAllElectrodes(bool showProgress=false);
     void CreateElectrode(const int iElec);
     void CreateElectrode(const int iElec, seeg::Point3D pDeep, seeg::Point3D pSurface);
     void DeleteElectrode(const int iElec);

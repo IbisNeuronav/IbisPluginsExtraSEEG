@@ -37,6 +37,7 @@
 #include <QDir>
 #include <QXmlStreamReader>
 #include <QDirIterator>
+#include <QProgressDialog>
 
 // itk includes
 #include "itkImageRegionIterator.h"
@@ -302,21 +303,35 @@ void SEEGAtlasWidget::OnObjectRemovedSlot(int imageObjectId)
     }
 }
 
-void SEEGAtlasWidget::CreateAllElectrodes() {
+void SEEGAtlasWidget::CreateAllElectrodes(bool showProgress) {
+    
+    // This progress bar does not reflect the real progress
+    // it assumes (arbitrarily) 30 electrodes and loops until all electrodes are loaded
+    Q_ASSERT(m_pluginInterface);
+    IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
+    int progressMax = 30;
+    QProgressDialog * progress;
+    if( showProgress ) progress = ibisApi->StartProgress(progressMax, "Creating electrodes");
+
     qDebug() << "Entering CreateAllElectrodes";
     // Init saved plan cylinders
     this->UpdateConfigurationFromUi(); //TODO check if needed?
+
     // Delete ALL electrodes
     Application::GetInstance().GetSceneManager()->RemoveAllChildrenObjects(this->m_SavedPlansObject);
+    
     // Create each electrode
     for (int iElec=0; iElec<MAX_SEEG_PLANS; iElec++) {
         if (m_AllPlans[iElec].isEntrySet && m_AllPlans[iElec].isTargetSet) {
             this->CreateElectrode(iElec);
         }
+        if( showProgress ) ibisApi->UpdateProgress(progress, iElec % progressMax);
     }
     // Init active electrode plan
     //m_ActivePlanData.m_CylObj->Delete();
     CreateActivePlan();
+
+    if( showProgress ) ibisApi->StopProgress(progress);
 	qDebug() << "Leaving CreateAllElectrodes";
 }
 
@@ -1201,6 +1216,9 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
  }
 
  void SEEGAtlasWidget::onLoadPlanningFromDirectory(QString dirName) {
+     
+     Q_ASSERT(m_pluginInterface);
+
      //ask for the directory where all the files with each planning are (one per target)
     if (dirName == QString("")) {
         QString baseDir = ui->labelDirBase->text();
@@ -1239,6 +1257,10 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          map<string,ElectrodeInfo::Pointer>::iterator elecIt;
          map<string,ElectrodeInfo::Pointer> bestCohort;
          bestCohort = m_SEEGElectrodesCohort->GetBestCohort();
+         
+         IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
+         QProgressDialog * progress = ibisApi->StartProgress(bestCohort.size(), tr("Loading planning from directory"));
+
          for (elecIt = bestCohort.begin(), iElec=0; elecIt != bestCohort.end(); elecIt++, iElec++) {
              string elName = elecIt->first;
              ElectrodeInfo::Pointer electrode = elecIt->second;
@@ -1252,7 +1274,10 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
              onUpdateElectrode(iElec, electrode);
              //this->DisplaySavedPlan(iElec); //it was not here before
              // this->RefreshPlanCoords(iElec, elName);
+             ibisApi->UpdateProgress(progress, iElec + 1);
          }
+
+
 
          //Update type of electrode on list
          //int indexType = m_ElectrodeModel->ElectrodeTypeEnumToIndex(m_SEEGElectrodesCohort->GetElectrodeType()); //TODO: replace by get electrode
@@ -1269,6 +1294,8 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          // this->UpdatePlan(iElec);
          // CreateActivePlan();
          // CreateAllElectrodes();
+
+         ibisApi->StopProgress(progress);
      }
  }
 
@@ -1506,13 +1533,12 @@ void SEEGAtlasWidget::on_comboBoxElectrodeType_currentIndexChanged(int index){
     
     m_ElectrodeModel = m_ElectrodeModelList.at(index);
     this->UpdateUi();
-
+    
     //SEEGElectrodesCohort::Pointer pathCohortObj = GetSEEGElectrodesCohort();
     m_SEEGElectrodesCohort->SetElectrodeModel(m_ElectrodeModel);
-
+    
     // Create visual electrodes again
-    CreateAllElectrodes();
-
+    CreateAllElectrodes(true);
     
 }
 
