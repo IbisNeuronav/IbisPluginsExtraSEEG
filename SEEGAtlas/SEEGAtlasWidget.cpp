@@ -160,12 +160,13 @@ void SEEGAtlasWidget::InitUI()
         }
 
         m_ConfigurationDir = foldername;
-        QDirIterator it(foldername, QStringList() << "*.xml", QDir::Files, QDirIterator::NoIteratorFlags);
-        while( it.hasNext() )
+        QStringList folders = QDir(foldername).entryList(QStringList() << "*.xml", QDir::Files | QDir::NoDot | QDir::NoDotDot, QDir::Name);
+
+        // loop through all config files
+        for(int i=0; i < folders.size(); ++i)
         {
-            QFile cofigfile(it.next());
             SerializerReader reader;
-            reader.SetFilename(cofigfile.fileName().toUtf8().data());
+            reader.SetFilename(QDir(foldername).filePath(folders[i]).toUtf8().data());
             reader.Start();
             SEEGElectrodeModel::Pointer elec = SEEGElectrodeModel::New();
             elec->Serialize(&reader);
