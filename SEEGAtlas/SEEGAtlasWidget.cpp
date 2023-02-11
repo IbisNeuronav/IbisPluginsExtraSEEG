@@ -1238,6 +1238,7 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
  void SEEGAtlasWidget::onLoadPlanningFromDirectory(QString dirName) {
      
      Q_ASSERT(m_pluginInterface);
+     IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
 
      //ask for the directory where all the files with each planning are (one per target)
     if (dirName == QString("")) {
@@ -1268,6 +1269,7 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          m_ElectrodeModel  = m_SEEGElectrodesCohort->GetElectrodeModel();
          m_SpacingResolution = m_SEEGElectrodesCohort->GetSpacingResolution();
 
+         this->UpdateUiFromConfiguration();
          //order in SEEGplanningwidget list MUST be the same!
          // assign info for each trajectory in best cohort
 
@@ -1278,7 +1280,6 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          map<string,ElectrodeInfo::Pointer> bestCohort;
          bestCohort = m_SEEGElectrodesCohort->GetBestCohort();
          
-         IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
          QProgressDialog * progress = ibisApi->StartProgress(bestCohort.size(), tr("Loading planning from directory"));
 
          for (elecIt = bestCohort.begin(), iElec=0; elecIt != bestCohort.end(); elecIt++, iElec++) {
@@ -1317,6 +1318,15 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
 
          ibisApi->StopProgress(progress);
      }
+
+     if( status == false )
+     {
+         QString message = tr("It seems that an error occurred when attempting to load:\n") +
+             dirName + tr("\n") +
+             tr("Please make sure that the electrode model specified in the planning exist.");
+         ibisApi->Warning(tr("Loading error"), message);
+     }
+
  }
 
 void SEEGAtlasWidget::onLoad1Plan() {
