@@ -9,7 +9,6 @@
 // header files to include
 #include "ElectrodeInfo.h"
 
-
 using namespace std;
 
 namespace seeg {
@@ -23,7 +22,6 @@ ElectrodeInfo::ElectrodeInfo() {
     m_ElectrodeVectorWorld.x=0;
     m_ElectrodeVectorWorld.y=0;
     m_ElectrodeVectorWorld.z=0;
-    m_ElectrodeType = SEEGElectrodeModel::MNI;
     m_ElectrodeName = "";
     m_Valid = false;
 }
@@ -33,7 +31,7 @@ ElectrodeInfo::ElectrodeInfo() {
  * @param entryPointWorld reference to the entry point's world coordinates
  * @param targetPointWorld reference to the target point's world coordinates
  */
-ElectrodeInfo::ElectrodeInfo(const Point3D& entryPointWorld, const Point3D& targetPointWorld, const SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType, std::string electrodeName) {
+ElectrodeInfo::ElectrodeInfo(const Point3D& entryPointWorld, const Point3D& targetPointWorld, const SEEGElectrodeModel::Pointer electrodeModel, std::string electrodeName) {
     m_TargetPointWorld = targetPointWorld;
     m_EntryPointWorld = entryPointWorld;
 
@@ -43,7 +41,7 @@ ElectrodeInfo::ElectrodeInfo(const Point3D& entryPointWorld, const Point3D& targ
     v.z = m_EntryPointWorld[2] - m_TargetPointWorld[2];
     float d = norm(v);
     m_ElectrodeVectorWorld = v/d; // unit vector
-    m_ElectrodeType = electrodeType;
+    m_ElectrodeModel = electrodeModel;
     m_ElectrodeName = electrodeName;
     m_Valid = false;
 }
@@ -71,12 +69,13 @@ void ElectrodeInfo::SetEntryPoint(seeg::Point3D entryPoint){
      m_EntryPointWorld = entryPoint;
 }
 
-seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE ElectrodeInfo::GetElectrodeModelType(){
-    return m_ElectrodeType;
+seeg::SEEGElectrodeModel::Pointer ElectrodeInfo::GetElectrodeModel()
+{
+    return m_ElectrodeModel;
 }
 
-void ElectrodeInfo::SetElectrodeModelType(seeg::SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType){
-    m_ElectrodeType = electrodeType;
+void ElectrodeInfo::SetElectrodeModel(seeg::SEEGElectrodeModel::Pointer electrodeModel){
+    m_ElectrodeModel = electrodeModel;
 }
 
 seeg::Vector3D_lf ElectrodeInfo::GetElectrodeVectorWorld(){
@@ -221,7 +220,7 @@ void ElectrodeInfo::ExtrapolateEntryPointToFixLength(Point3D& targetPt, Point3D&
 }
 
 /*** Save & Load functions ***/
-bool ElectrodeInfo::LoadElectrodeDataFromFile (const string& filename, const char delimiter) {
+bool ElectrodeInfo::LoadElectrodeDataFromFile (const string& filename, const char delimiter, std::vector<seeg::SEEGElectrodeModel::Pointer> modelList) {
     //only load this electrode's data
     ifstream file;
     string line("notempty");
@@ -248,7 +247,25 @@ bool ElectrodeInfo::LoadElectrodeDataFromFile (const string& filename, const cha
         }  else if(token == "[electrodeType]") { //electrode type line contains electrotype (e.g. MNI, DIXI15)
             getline(ss, token, delimiter);
             seeg::SEEGElectrodeModel::Pointer electrodeModel;
-            SetElectrodeModelType( electrodeModel->ElectrodeTypeStringToEnum(token.c_str()));
+
+            bool found = false;
+            for(int i = 0; (i < modelList.size()) && !found; ++i )
+            {
+                if( modelList[i]->GetElectrodeId().compare(token.c_str()) == 0 )
+                {
+                    electrodeModel = modelList[i];
+                    found = true;
+                }
+                    
+            }
+            if( !found )
+            {
+                // electrode does not exist in config directory
+                //TODO: display warning message to user
+                return false;
+            }
+            
+            this->SetElectrodeModel(electrodeModel);
 
         } else if (token == "[trajectory]") {
             Point3D entryPointWorld, targetPointWorld;
@@ -380,7 +397,7 @@ void ElectrodeInfo::SaveElectrodeDataToFile(const string& filename, const char d
     ofstream file;
     file.open(filename.c_str());
     file << "[fileType]"<< delimiter<< "Electrode" << endl;
-    file << "[electrodeType]"<< delimiter<< electModel->ElectrodeTypeEnumToString(m_ElectrodeType) << endl;
+    file << "[electrodeType]"<< delimiter<< electModel->GetElectrodeName() << endl;
     file << "[trajectory]"<< delimiter;
     file << m_ElectrodeName.c_str() << delimiter;
     file << m_TargetPointWorld[0] << delimiter;

@@ -59,6 +59,7 @@ private:
     vector<string> m_ElectrodesNames;
 
     seeg::SEEGElectrodeModel::Pointer m_ElectrodeModel;
+    std::vector< seeg::SEEGElectrodeModel::Pointer > m_ElectrodeModelList;
 
     float m_SpacingResolution; //RIZ: this might be unnecessary...
 
@@ -73,7 +74,7 @@ private slots:
     // Dataset management and visualization presets
     void onLoadSEEGDatasetsFromDir();
     void onLoadSEEGDatasetsFromDir(QString dirName);
-    void onChangeElectrodeType(QString newType);
+    void on_comboBoxElectrodeType_currentIndexChanged(int index);
     void OnObjectAddedSlot(int imageObjectId);
     void OnObjectRemovedSlot(int imageObjectId);
 
@@ -133,7 +134,8 @@ private slots:
     //Batch Analysis
     void onRunBatchAnalysis();
 
-
+    // adjust contact slot
+    void on_pushButtonUpdateContactPosition_clicked();
 
 private:
 
@@ -141,13 +143,17 @@ private:
    int getLocationValue(seeg::Point3D point);
 
    void InitUI();
+   void UpdateUi();
+
+   void UpdateConfigurationFromUi();
+   void UpdateUiFromConfiguration();
 
     // Create and Display trajectory cylinders
    // void DisplaySavedPlan(int iElec);
    // void DisplayAllSavedPlan();
    // void SetTrajectoryCursor(seeg::Point3D targetPoint,seeg::Point3D entryPoint);
     void FillComboBoxBrainSegmentation();
-    void CreateAllElectrodes();
+    void CreateAllElectrodes(bool showProgress=false);
     void CreateElectrode(const int iElec);
     void CreateElectrode(const int iElec, seeg::Point3D pDeep, seeg::Point3D pSurface);
     void DeleteElectrode(const int iElec);
@@ -188,6 +194,8 @@ private:
     void ResetElectrodes();
 
     SEEGAtlasPluginInterface * m_pluginInterface;
+
+    QString m_ConfigurationDir;
 
     // Atlas
     seeg::FloatVolume::Pointer openAtlasVolume();

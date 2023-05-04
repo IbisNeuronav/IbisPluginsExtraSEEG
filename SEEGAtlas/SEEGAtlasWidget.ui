@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
+    <width>564</width>
     <height>1048</height>
    </rect>
   </property>
@@ -52,19 +52,13 @@
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="1" column="0">
            <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0" colspan="2">
-             <widget class="QPushButton" name="pushLoadDatasetsFromDir">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="1" column="2">
+             <widget class="QCheckBox" name="checkBoxLightDatasetLoading">
               <property name="text">
-               <string>Load MRI/CT From Dir</string>
+               <string>Light version</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -88,6 +82,32 @@
                 <string>Electrodes (pos-space)</string>
                </property>
               </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Type: </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="2">
+             <widget class="QPushButton" name="pushLoadDatasetsFromDir">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Load MRI/CT From Dir</string>
+              </property>
              </widget>
             </item>
             <item row="3" column="0" colspan="3">
@@ -117,16 +137,6 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QCheckBox" name="checkBoxLightDatasetLoading">
-              <property name="text">
-               <string>Light version</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="comboBoxElectrodeType">
               <property name="enabled">
@@ -134,66 +144,6 @@
               </property>
               <property name="toolTip">
                <string>Select electrode model from list</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>MNI electrodes (0.8mm^2)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>DIXI10 (5mm^2 - 10contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>DIXI15 (5mm^2 - 15contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>DIXI18 (5mm^2 - 18contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>STRIP (8 contacts)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>CONTACT (1 DIXIcontact)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MM09A51 (Micro-macro)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MM09A40 (Micro-macro)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>MM09A33 (Micro-macro)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>TEST</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Type: </string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -543,31 +493,6 @@
           <string>Contact's Information</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButtonShowContactsTable">
-            <property name="toolTip">
-             <string>if checked shows contacts / if NOT checked shows channels</string>
-            </property>
-            <property name="text">
-             <string>Showing CONTACTS in table</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>true</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
@@ -584,6 +509,9 @@
               </property>
               <property name="text">
                <string>Use Cylinder</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -726,6 +654,48 @@
              </layout>
             </widget>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QPushButton" name="pushButtonShowContactsTable">
+              <property name="toolTip">
+               <string>if checked shows contacts / if NOT checked shows channels</string>
+              </property>
+              <property name="text">
+               <string>Showing CONTACTS in table</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+              <property name="autoDefault">
+               <bool>true</bool>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonUpdateContactPosition">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update position of the currently selected contact in the table to cursor position&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Update selected contact position</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -941,8 +911,8 @@
    <slot>onLoadPlanningFromDirectory()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>222</x>
-     <y>454</y>
+     <x>206</x>
+     <y>494</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
@@ -958,7 +928,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>454</y>
+     <y>494</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
@@ -973,8 +943,8 @@
    <slot>onPlanSelect(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>326</y>
+     <x>328</x>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
@@ -990,7 +960,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>425</y>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
@@ -1006,7 +976,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>396</y>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
@@ -1021,28 +991,12 @@
    <slot>onSetTargetPointFromCursor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>396</y>
+     <x>328</x>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
      <y>431</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>comboBoxElectrodeType</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>SEEGAtlasWidget</receiver>
-   <slot>onChangeElectrodeType(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>347</x>
-     <y>91</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>292</x>
-     <y>614</y>
     </hint>
    </hints>
   </connection>
@@ -1053,8 +1007,8 @@
    <slot>onSetEntryPointFromCursor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>425</y>
+     <x>328</x>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>302</x>
@@ -1085,8 +1039,8 @@
    <slot>onLoad1Plan()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>454</y>
+     <x>328</x>
+     <y>494</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -1102,7 +1056,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>326</y>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -1134,7 +1088,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>959</y>
+     <y>957</y>
     </hint>
     <hint type="destinationlabel">
      <x>302</x>
@@ -1150,7 +1104,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>347</x>
-     <y>959</y>
+     <y>957</y>
     </hint>
     <hint type="destinationlabel">
      <x>173</x>
@@ -1197,8 +1151,8 @@
    <slot>onFindAnatLocation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>333</x>
-     <y>518</y>
+     <x>178</x>
+     <y>558</y>
     </hint>
     <hint type="destinationlabel">
      <x>317</x>
@@ -1213,8 +1167,8 @@
    <slot>onFindChannelsAnatLocation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>518</y>
+     <x>396</x>
+     <y>558</y>
     </hint>
     <hint type="destinationlabel">
      <x>317</x>
@@ -1229,8 +1183,8 @@
    <slot>onGetLocationValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>139</x>
-     <y>854</y>
+     <x>159</x>
+     <y>894</y>
     </hint>
     <hint type="destinationlabel">
      <x>290</x>
@@ -1245,8 +1199,8 @@
    <slot>onShowContactsChannelsTable(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>351</x>
-     <y>548</y>
+     <x>393</x>
+     <y>588</y>
     </hint>
     <hint type="destinationlabel">
      <x>290</x>
@@ -1262,7 +1216,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>509</x>
-     <y>988</y>
+     <y>1017</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>

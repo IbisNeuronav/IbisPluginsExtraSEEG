@@ -14,7 +14,7 @@
 #include "BasicTypes.h"
 #include "VolumeTypes.h"
 #include <vtkRenderer.h>
-#include <QVTKWidget.h>
+#include <QVTKRenderWidget.h>
 #include <map>
 #include <string>
 #include <vtkVolume.h>
@@ -192,7 +192,7 @@ namespace seeg {
         /**
          * Accessor for the QVTKWidget (for GUI purpose)
          */
-        QVTKWidget * GetWidget();
+        QVTKRenderWidget * GetWidget();
 
     protected:
 
@@ -201,7 +201,7 @@ namespace seeg {
         vtkSmartPointer<vtkRenderer> m_Renderer;
 
         /** Top level QVTKWidget */
-        QVTKWidget m_Widget;
+        QVTKRenderWidget m_Widget;
 
         /** Info about all volumes in the scene */
         SolidVolumeSceneMap m_AllVolumes;

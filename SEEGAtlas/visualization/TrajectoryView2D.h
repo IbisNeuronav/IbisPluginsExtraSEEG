@@ -12,7 +12,7 @@
 #include <vtkImageActor.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkPolyData.h>
-#include <QVTKWidget.h>
+#include <QVTKRenderWidget.h>
 #include <vtkImageProperty.h>
 #include <vector>
 
@@ -66,7 +66,7 @@ namespace seeg {
         vtkImageProperty * GetImageProperty();
 
 
-        QVTKWidget * GetTrajectoryViewWidget() {
+        QVTKRenderWidget * GetTrajectoryViewWidget() {
             return &m_Widget;
         }
         ByteVolume::Pointer GetVolume();
@@ -96,7 +96,7 @@ namespace seeg {
         vtkSmartPointer<vtkImageSlice> m_ImageSlice;
         vtkSmartPointer<vtkImageResliceMapper> m_ImageResliceMapper;
         vtkSmartPointer<vtkRenderer> m_Renderer;
-        QVTKWidget m_Widget;
+        QVTKRenderWidget m_Widget;
         vtkSmartPointer<TrajectoryView2DInteractorStyle> m_InteractorStyle;
 
         // cursor

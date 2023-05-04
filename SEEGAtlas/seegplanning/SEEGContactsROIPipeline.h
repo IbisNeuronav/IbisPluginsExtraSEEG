@@ -47,24 +47,24 @@ namespace seeg {
       /** SmartPointer type for the SEEGROIPipeline class */
       typedef mrilSmartPtr<SEEGContactsROIPipeline> Pointer;
 
-     static Pointer New(FloatVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) { return Pointer(new SEEGContactsROIPipeline(templateVolume, type)); }
+     static Pointer New(FloatVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel) { return Pointer(new SEEGContactsROIPipeline(templateVolume, electrodeModel)); }
 
-     static Pointer New(IntVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) { return Pointer(new SEEGContactsROIPipeline(templateVolume, type)); }
+     static Pointer New(IntVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel) { return Pointer(new SEEGContactsROIPipeline(templateVolume, electrodeModel)); }
 
-     static Pointer New(ByteVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type) { return Pointer(new SEEGContactsROIPipeline(templateVolume, type)); }
+     static Pointer New(ByteVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel) { return Pointer(new SEEGContactsROIPipeline(templateVolume, electrodeModel)); }
 
 
 
   protected:
      // Constructors
 
-    SEEGContactsROIPipeline (FloatVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type);
+    SEEGContactsROIPipeline (FloatVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel);
 
-    SEEGContactsROIPipeline (IntVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type);
+    SEEGContactsROIPipeline (IntVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel);
 
-    SEEGContactsROIPipeline (ByteVolume::Pointer templateVolume, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type);
+    SEEGContactsROIPipeline (ByteVolume::Pointer templateVolume, SEEGElectrodeModel::Pointer electrodeModel);
 
-    SEEGContactsROIPipeline (const string& templateVolumeFile, SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type);
+    SEEGContactsROIPipeline (const string& templateVolumeFile, SEEGElectrodeModel::Pointer electrodeModel);
 
   public:
         virtual ~SEEGContactsROIPipeline();

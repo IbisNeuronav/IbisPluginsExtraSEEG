@@ -21,6 +21,7 @@
 #include <vtkColorTransferFunction.h>
 //#include "vtkVolumeTextureMapper2D.h"
 #include <vtkGPUVolumeRayCastMapper.h>
+#include <QVTKRenderWidget.h>
 
 namespace seeg {
 
@@ -74,7 +75,7 @@ namespace seeg {
     }
 
 
-    QVTKWidget * SolidVolumeView::GetWidget() {
+    QVTKRenderWidget * SolidVolumeView::GetWidget() {
         return &m_Widget;
     }
 

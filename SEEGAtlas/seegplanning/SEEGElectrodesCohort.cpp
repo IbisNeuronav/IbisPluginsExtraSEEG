@@ -9,15 +9,15 @@ namespace seeg {
     SEEGElectrodesCohort::SEEGElectrodesCohort()
     {
         // default: MNI electrode and 0.5mm resolution
-        SEEGElectrodesCohort(SEEGElectrodeModel::DIXI15, 0.5);
+        SEEGElectrodesCohort(SEEGElectrodeModel::New(), 0.5);
     }
 
     SEEGElectrodesCohort::SEEGElectrodesCohort(FloatVolume::Pointer templateVolume){
       // m_PipelineTrajectory = SEEGTrajectoryROIPipeline::New(templateVolume);
     }
 
-    SEEGElectrodesCohort::SEEGElectrodesCohort(SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE type, float spacing){
-        m_ElectrodeModel = SEEGElectrodeModel::New(type);
+    SEEGElectrodesCohort::SEEGElectrodesCohort(SEEGElectrodeModel::Pointer model, float spacing){
+        m_ElectrodeModel = model;
         m_SpacingResolution = spacing;
     }
 
@@ -118,12 +118,8 @@ namespace seeg {
         return m_ElectrodeModel;
     }
 
-    SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE SEEGElectrodesCohort::GetElectrodeType(){
-        return m_ElectrodeModel->GetElectrodeType();
-    }
-
-    void SEEGElectrodesCohort::SetElectrodeModel(SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electrodeType){
-        this->m_ElectrodeModel= SEEGElectrodeModel::New(electrodeType); //assign type of electrode to cohort
+    void SEEGElectrodesCohort::SetElectrodeModel(SEEGElectrodeModel::Pointer electrodeModel){
+        m_ElectrodeModel = electrodeModel; //assign type of electrode to cohort
         // change also in each electrode in best cohort
         map<string, ElectrodeInfo::Pointer> bestCohort = GetBestCohort();
 
@@ -134,7 +130,7 @@ namespace seeg {
             ElectrodeInfo::Pointer electrode = it1->second;
             if( electrode )
             {
-                electrode->SetElectrodeModelType(electrodeType);
+                electrode->SetElectrodeModel(electrodeModel);
             }
         }
     }
@@ -167,13 +163,13 @@ namespace seeg {
     }
 
     /*** Save & Load functions ***/
-    bool SEEGElectrodesCohort::LoadSEEGBestCohortDataFromFile (const string& filename, const char delimiter) {
+    bool SEEGElectrodesCohort::LoadSEEGBestCohortDataFromFile (const string& filename, const char delimiter, std::vector<seeg::SEEGElectrodeModel::Pointer> modelList) {
         //only load bestCohort - weights are already obtained from each trajectory file
         ifstream file;
         string line("notempty");
         string token;
         string testName;
-        SEEGElectrodeModel::SEEG_ELECTRODE_MODEL_TYPE electType;
+        SEEGElectrodeModel::Pointer electrodeModel;
 
         bool status=false;
         ResetBestCohort();
@@ -194,8 +190,28 @@ namespace seeg {
 
             }  else if(token == "[electrodeType]") { //electrode type line contains electrotype (e.g. MNI) and spacing (e.g. 0.5)
                 getline(ss, token, delimiter);
-                electType = m_ElectrodeModel->ElectrodeTypeStringToEnum(token);
-                SetElectrodeModel(electType);
+                
+                // look for electrode in config dir
+                seeg::SEEGElectrodeModel::Pointer electrodeModel;
+                bool found = false;
+                for( int i = 0; (i < modelList.size()) && !found; ++i )
+                {
+                    if( modelList[i]->GetElectrodeId().compare(token.c_str()) == 0 )
+                    {
+                        electrodeModel = modelList[i];
+                        found = true;
+                    }
+
+                }
+                if( !found )
+                {
+                    // electrode does not exist in config directory
+                    //TODO: display warning message to user
+                    return false;
+                }
+
+                this->SetElectrodeModel(electrodeModel);
+
                 getline(ss, token, delimiter);
                 m_SpacingResolution = atof(token.c_str()); //RIZ: this might be unnecessary!!
             } else if (token == "[trajectory]") {
@@ -223,7 +239,7 @@ namespace seeg {
                 getline(ss, token, delimiter);
                 isElectrodeValid = atoi(token.c_str()); //RIZ20151201: Should we use this to validate??
 
-                ElectrodeInfo::Pointer electrode = ElectrodeInfo::New(entryPointWorld, targetPointWorld, electType, electrodeName);
+                ElectrodeInfo::Pointer electrode = ElectrodeInfo::New(entryPointWorld, targetPointWorld, m_ElectrodeModel, electrodeName);
                 AddTrajectoryToBestCohort(electrodeName, electrode, indexElectrode);
                 status=true;
 
@@ -248,7 +264,7 @@ namespace seeg {
         ofstream file;
         file.open(filename.c_str());
         file << "[fileType]"<< delimiter<< "Cohort" << endl;
-        file << "[electrodeType]"<< delimiter<< m_ElectrodeModel->ElectrodeTypeEnumToString(m_ElectrodeModel->GetElectrodeType()) <<delimiter<< m_SpacingResolution << endl; //RIZ: this might be removed...
+        file << "[electrodeType]"<< delimiter<< m_ElectrodeModel->GetElectrodeId() <<delimiter<< m_SpacingResolution << endl; //RIZ: this might be removed...
 
         //Get weights info from first trajectory in full cohort
       //  string electrodeName = m_Cohort.begin()->first;
