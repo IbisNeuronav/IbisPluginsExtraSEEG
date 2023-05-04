@@ -1264,10 +1264,12 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
          status = m_SEEGElectrodesCohort->LoadSEEGBestCohortDataFromFile (filename, DELIMITER_TRAJFILE_2OPTION, m_ElectrodeModelList);
      }
      if (status==true){
+
          electrodeNames = m_SEEGElectrodesCohort->GetElectrodeNames();
          // Get electrode type from m_SEEGElectrodesCohort
          m_ElectrodeModel  = m_SEEGElectrodesCohort->GetElectrodeModel();
          m_SpacingResolution = m_SEEGElectrodesCohort->GetSpacingResolution();
+         this->UpdateUiFromConfiguration();
 
          this->UpdateUiFromConfiguration();
          //order in SEEGplanningwidget list MUST be the same!
@@ -2462,4 +2464,85 @@ void SEEGAtlasWidget::onRunBatchAnalysis(){
     } else {
 		qDebug() << "File "<< fullFileNamePatients.c_str() << "not found.";
     }
+}
+
+void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
+{
+    Q_ASSERT(m_pluginInterface);
+    IbisAPI *api = m_pluginInterface->GetIbisAPI();
+
+//    QString tabName = ui->tabWidgetScores->tabText(ui->tabWidgetScores->currentIndex());
+
+    // get electrode index that matches the current tab name
+//    int iElec = -1;
+//    for (int i = 0; i < ui->comboBoxPlanSelect->count(); ++i)
+//    {
+//        if (tabName.compare(ui->comboBoxPlanSelect->itemText(i)) == 0)
+//        {
+//            iElec = i;
+//        }
+//    }
+//    if (iElec == -1) return;
+
+    int indTab = ui->tabWidgetScores->currentIndex();
+    int iElec = indTab-1;
+
+    if (iElec > m_VectorContactsTables.size() || iElec < 0) {return;}
+    QTableWidget* table = m_VectorContactsTables[iElec];
+
+    int iContact = table->currentRow();
+
+    //First column is electrode name
+    string contactName = table->item(iContact, 0)->text().toStdString();
+
+    // 2-4 columns are xyz
+    double contactPosition[3];
+    api->GetCursorPosition(contactPosition);
+
+    for (int i=0; i<3; i++){ //column 0 is name / 1-3 columns are target / 4-6 columns are entry
+        QTableWidgetItem * item = new QTableWidgetItem();
+        item->setText( QString::number(contactPosition[i]) );
+        table->setItem(iContact, i+1, item);
+    }
+
+    string electrodeName = m_AllPlans[iElec].name;
+    ElectrodeInfo::Pointer electrode = m_SEEGElectrodesCohort->GetTrajectoryInBestCohort(electrodeName);
+    ContactInfo::Pointer contact = electrode->GetOneContact(iContact);
+    if (std::strcmp(contactName.c_str(), contact->GetContactName().c_str()) != 0) return;
+
+    contact->SetCentralPoint(contactPosition);
+    electrode->ReplaceContact(contact, iContact);
+
+    if (contact->m_IsLocationSet)
+    {
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setText( contact->GetContactLocation().c_str() );
+            table->setItem(iContact, 4, item);
+        }
+
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setText( QString::number(contact->GetProbabilityOfLocation(),'g',3) );
+            table->setItem(iContact, 5, item);
+        }
+    }
+
+    ///TODO: work in progress
+    /// - update probability and location
+    /// - write fonctions tocaltucate probaility in SEEGContactsROIPipeline based on 3d points (not electrode indices)
+    /// - update cohort info (make sure UI does not reload electrode info)
+    /// - change contact color in 3D representation
+
+
+
+
+//    double pos_t1[3];
+//    api->GetCursorPosition(pos_t1);
+//    m_AllPlans[iElec].targetPoint[0] = pos_t1[0];
+//    m_AllPlans[iElec].targetPoint[1] = pos_t1[1];
+//    m_AllPlans[iElec].targetPoint[2] = pos_t1[2];
+//    m_AllPlans[iElec].isTargetSet = true;
+
+//    onUpdateElectrode(iElec);
 }

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
+    <width>564</width>
     <height>1048</height>
    </rect>
   </property>
@@ -39,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>520</width>
-        <height>1028</height>
+        <width>559</width>
+        <height>1014</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -493,31 +493,6 @@
           <string>Contact's Information</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButtonShowContactsTable">
-            <property name="toolTip">
-             <string>if checked shows contacts / if NOT checked shows channels</string>
-            </property>
-            <property name="text">
-             <string>Showing CONTACTS in table</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>true</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
@@ -534,6 +509,9 @@
               </property>
               <property name="text">
                <string>Use Cylinder</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -676,6 +654,48 @@
              </layout>
             </widget>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QPushButton" name="pushButtonShowContactsTable">
+              <property name="toolTip">
+               <string>if checked shows contacts / if NOT checked shows channels</string>
+              </property>
+              <property name="text">
+               <string>Showing CONTACTS in table</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+              <property name="autoDefault">
+               <bool>true</bool>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonUpdateContactPosition">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update position of the currently selected contact in the table to cursor position&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Update selected contact position</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>

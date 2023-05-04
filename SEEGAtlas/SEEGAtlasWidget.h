@@ -134,6 +134,9 @@ private slots:
     //Batch Analysis
     void onRunBatchAnalysis();
 
+    // adjust contact slot
+    void on_pushButtonUpdateContactPosition_clicked();
+
 private:
 
    void SelectTrajectoryInList(seeg::Point3D targetPoint, seeg::Point3D entryPoint);
