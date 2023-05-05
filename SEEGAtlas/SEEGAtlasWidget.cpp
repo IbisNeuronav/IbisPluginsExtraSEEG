@@ -210,6 +210,8 @@ void SEEGAtlasWidget::InitUI()
     ui->pushButtonFindAnatLocChannel->setVisible(true);
     ui->comboBoxBrainSegmentation->setVisible(false);
     ui->pushGenerateSurface->setVisible(false);
+    ui->horizontalSliderCylRadius->setEnabled(false);
+    ui->horizontalSliderCylinderLength->setEnabled(false);
 
     //Init Combo Box with Plans
     for( int iElec = 0; iElec < MAX_VISIBLE_PLANS; iElec++ ) { // Only 20 visible to start - MAX_SEEG_PLANS is now 1000!
@@ -1392,9 +1394,12 @@ void SEEGAtlasWidget::onSavePlanningToDirectory() {
 
 void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
     // Save one file with all electrodes and one file per electrode with contacts' information
+    Q_ASSERT(m_pluginInterface);
+
+    IbisAPI * api = m_pluginInterface->GetIbisAPI();
     if (dirName == QString("")) {
-        QString baseDir = ui->labelDirBase->text();
-        dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Electrode Files"), baseDir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
+        dirName = api->GetExistingDirectory(tr("Select Directory to Save Electrode Files"), api->GetWorkingDirectory());
+
     }
     if (dirName != QString("")) {
         //dirname.append("/AllTrajectories");
@@ -1419,14 +1424,18 @@ void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
         map<string,ElectrodeInfo::Pointer>::iterator elecIt;
         map<string,ElectrodeInfo::Pointer> bestCohort;
         bestCohort = m_SEEGElectrodesCohort->GetBestCohort();
-        for (elecIt = bestCohort.begin(); elecIt != bestCohort.end(); elecIt++) {
+        QProgressDialog *progress = api->StartProgress(bestCohort.size(), tr("Saving electrodes in dir: ") + dirName);
+        int i;
+        for (elecIt = bestCohort.begin(), i = 0; elecIt != bestCohort.end(); elecIt++, i++) {
             string elName = elecIt->first;
             ElectrodeInfo::Pointer el = elecIt->second;
             string filename = dirName.toStdString() + "/"+ string(FILE_RESULTS_TRAJ_GRAL)+ elName  + string(FILE_POS_FIX);
 			qDebug() <<"Saving electrode: " << elName.c_str() <<" in file: "<< filename.c_str();
 
             el->SaveElectrodeDataToFile (filename, DELIMITER_TRAJFILE);
+            api->UpdateProgress(progress, i);
         }
+        api->StopProgress(progress);
     }
 }
 
