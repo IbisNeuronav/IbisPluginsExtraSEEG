@@ -19,6 +19,7 @@ set( PluginSrc
         SEEGTrajVisWidget.cpp
         ContactsListTableWidget.cpp
         NameInputDialog.cpp
+        SEEGPointRepresentation.cpp
         seegplanning/SEEGFileHelper.cpp
         seegplanning/SEEGElectrodeModel.cpp
         seegplanning/SEEGTrajectoryROIPipeline.cpp
@@ -40,6 +41,7 @@ set( PluginSrc
     )
 
 set( PluginHdr
+        SEEGPointRepresentation.h
         seegplanning/SEEGFileHelper.h
         seegplanning/SEEGElectrodeModel.h
         seegplanning/SEEGTrajectoryROIPipeline.h

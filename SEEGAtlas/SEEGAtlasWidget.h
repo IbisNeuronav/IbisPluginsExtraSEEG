@@ -12,6 +12,7 @@
 #include "SEEGElectrodeModel.h"
 #include "SEEGElectrodesCohort.h"
 #include "seegatlasplugininterface.h"
+#include <SEEGPointRepresentation.h>
 #include <QTableWidget>
 
 class SEEGAtlasPluginInterface;
@@ -19,6 +20,7 @@ class PolyDataObject;
 class Application;
 class SceneObject;
 class SEEGTrajVisWidget;
+class SEEGPointRepresentation;
 
 namespace Ui
 {
@@ -37,6 +39,7 @@ struct ElectrodeDisplay{
     CylinderDisplay m_ElectrodeDisplay;
     std::vector<CylinderDisplay> m_ContactsDisplay;
     seeg::SEEGElectrodeModel::Pointer m_ElectrodeModel;
+    seeg::SEEGPointRepresentation::Pointer m_PointRepresentation;
 };
 
 
