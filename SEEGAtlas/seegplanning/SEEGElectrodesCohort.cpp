@@ -123,16 +123,16 @@ namespace seeg {
         // change also in each electrode in best cohort
         map<string, ElectrodeInfo::Pointer> bestCohort = GetBestCohort();
 
-        // Get bounding box of each electrode
-        map<string, ElectrodeInfo::Pointer>::const_iterator it1;
-        int iElec;
-        for (iElec=0,it1 = bestCohort.begin(); it1 != bestCohort.end(); iElec++,it1++) {
-            ElectrodeInfo::Pointer electrode = it1->second;
-            if( electrode )
-            {
-                electrode->SetElectrodeModel(electrodeModel);
-            }
-        }
+        //// Get bounding box of each electrode
+        //map<string, ElectrodeInfo::Pointer>::const_iterator it1;
+        //int iElec;
+        //for (iElec=0,it1 = bestCohort.begin(); it1 != bestCohort.end(); iElec++,it1++) {
+        //    ElectrodeInfo::Pointer electrode = it1->second;
+        //    if( electrode )
+        //    {
+        //        electrode->SetElectrodeModel(electrodeModel);
+        //    }
+        //}
     }
 
     /*** Points along trajectory ***/

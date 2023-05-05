@@ -194,7 +194,7 @@ namespace seeg {
 //CHANNELS
 #define FILE_CHANNELS_GRAL "channels_"
 
-#define MAX_SEEG_PLANS 1000 //before: 20 //INCREASE to generalize!
+#define MAX_SEEG_PLANS 100 //before: 20 //INCREASE to generalize!
 #define MAX_VISIBLE_PLANS 20 // now separate the number of plans in combo (to mark in each patient to the total number (e.g. to visualize in atlas)
 
 /************** PUBLIC TYPE DEFINITION *****************************/

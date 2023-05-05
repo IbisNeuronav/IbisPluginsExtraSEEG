@@ -41,7 +41,8 @@ ElectrodeInfo::ElectrodeInfo(const Point3D& entryPointWorld, const Point3D& targ
     v.z = m_EntryPointWorld[2] - m_TargetPointWorld[2];
     float d = norm(v);
     m_ElectrodeVectorWorld = v/d; // unit vector
-    m_ElectrodeModel = electrodeModel;
+    m_ElectrodeModel = SEEGElectrodeModel::New();
+    m_ElectrodeModel->DeepCopy(electrodeModel);
     m_ElectrodeName = electrodeName;
     m_Valid = false;
 }
@@ -75,7 +76,7 @@ seeg::SEEGElectrodeModel::Pointer ElectrodeInfo::GetElectrodeModel()
 }
 
 void ElectrodeInfo::SetElectrodeModel(seeg::SEEGElectrodeModel::Pointer electrodeModel){
-    m_ElectrodeModel = electrodeModel;
+    m_ElectrodeModel->DeepCopy(electrodeModel);
 }
 
 seeg::Vector3D_lf ElectrodeInfo::GetElectrodeVectorWorld(){
@@ -393,11 +394,11 @@ bool ElectrodeInfo::LoadElectrodeDataFromFile (const string& filename, const cha
 void ElectrodeInfo::SaveElectrodeDataToFile(const string& filename, const char delimiter){
     // Saves best trajectory
     cout<<"Saving All Electrodes information to "<<filename<< endl;
-    seeg::SEEGElectrodeModel::Pointer electModel;
+    seeg::SEEGElectrodeModel::Pointer electModel = m_ElectrodeModel;
     ofstream file;
     file.open(filename.c_str());
     file << "[fileType]"<< delimiter<< "Electrode" << endl;
-    file << "[electrodeType]"<< delimiter<< electModel->GetElectrodeName() << endl;
+    file << "[electrodeType]"<< delimiter<< electModel->GetElectrodeId() << endl;
     file << "[trajectory]"<< delimiter;
     file << m_ElectrodeName.c_str() << delimiter;
     file << m_TargetPointWorld[0] << delimiter;
