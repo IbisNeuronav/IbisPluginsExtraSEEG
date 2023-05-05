@@ -138,6 +138,8 @@ public:
 
     float CalcDistFromTipToChannelCenter(unsigned int contact_index);
 
+    void DeepCopy(const SEEGElectrodeModel::Pointer model);
+
 };
 
 ObjectSerializationHeaderMacro(SEEGElectrodeModel);

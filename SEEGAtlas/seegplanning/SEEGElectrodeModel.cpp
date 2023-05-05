@@ -203,6 +203,24 @@ namespace seeg {
 
     }
 
+    void SEEGElectrodeModel::DeepCopy(const SEEGElectrodeModel::Pointer model)
+    {
+        if( this == model.get() ) return;
+
+        this->m_ElectrodeId = model->m_ElectrodeId;
+        this->m_ElectrodeName = model->m_ElectrodeName;
+        this->m_TipContactHeight = model->m_TipContactHeight;
+        this->m_recordingRadius = model->m_recordingRadius;
+        this->m_PegHeight = model->m_PegHeight;
+        this->m_PegDiameter = model->m_PegDiameter;
+        this->m_ContactDiameter = model->m_ContactDiameter;
+        this->m_ContactHeight = model->m_ContactHeight;
+        this->m_ContactSpacing = model->m_ContactSpacing;
+        this->m_NumContacts = model->m_NumContacts;
+        this->m_TipOffset = model->m_TipOffset;
+
+    }
+
     void SEEGElectrodeModel::Serialize(Serializer * ser)
     {
         ::Serialize(ser, "ElectrodeId", m_ElectrodeId);

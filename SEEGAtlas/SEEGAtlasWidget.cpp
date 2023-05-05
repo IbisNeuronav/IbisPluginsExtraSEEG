@@ -326,10 +326,10 @@ void SEEGAtlasWidget::OnObjectRemovedSlot(int imageObjectId)
 void SEEGAtlasWidget::CreateAllElectrodes(bool showProgress) {
     
     // This progress bar does not reflect the real progress
-    // it assumes (arbitrarily) 30 electrodes and loops until all electrodes are loaded
+    // it assumes (arbitrarily) MAX_VISIBLE_PLANS electrodes and loops until all electrodes are loaded
     Q_ASSERT(m_pluginInterface);
     IbisAPI * ibisApi = m_pluginInterface->GetIbisAPI();
-    int progressMax = 30;
+    int progressMax = MAX_VISIBLE_PLANS;
     QProgressDialog * progress;
     if( showProgress ) progress = ibisApi->StartProgress(progressMax, "Creating electrodes");
 
