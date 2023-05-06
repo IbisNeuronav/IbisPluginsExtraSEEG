@@ -383,7 +383,7 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
     dcolor[1] = double( m_PosColors[iElec].green() ) / 255.0;
     dcolor[2] = double( m_PosColors[iElec].blue() ) / 255.0;
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
-    UpdatePlan(iElec);
+    //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
     // Add also contacts all contacts of default electrode type (MNI)
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
@@ -527,7 +527,7 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedContacts(const int iElec, Point
     dcolor[1] = double( m_PosColors[iElec].green() ) / 255.0;
     dcolor[2] = double( m_PosColors[iElec].blue() ) / 255.0;
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
-    UpdatePlan(iElec);
+    //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
     for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
@@ -608,7 +608,7 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedChannels(const int iElec, seeg:
     dcolor[1] = double( m_PosColors[iElec].green() ) / 255.0;
     dcolor[2] = double( m_PosColors[iElec].blue() ) / 255.0;
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
-    UpdatePlan(iElec);
+    //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
     // Create channels
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateChannelCylinderObj("channel", pDeep, pSurface, m_ElectrodeModel);
@@ -647,7 +647,7 @@ CylinderDisplay SEEGAtlasWidget::CreateCylinderObj(QString name, seeg::Point3D p
     cylObj.m_Line->SetPoint2(p2[0], p2[1], p2[2]);
     cylObj.m_Cylinder = vtkSmartPointer<vtkTubeFilter>::New();
     cylObj.m_Cylinder->SetInputConnection(cylObj.m_Line->GetOutputPort());
-    cylObj.m_Cylinder->SetNumberOfSides(50);
+    cylObj.m_Cylinder->SetNumberOfSides(20);
     cylObj.m_Cylinder->CappingOn();
     cylObj.m_CylObj = PolyDataObject::New();
     cylObj.m_CylObj->SetName(name);
@@ -658,7 +658,8 @@ CylinderDisplay SEEGAtlasWidget::CreateCylinderObj(QString name, seeg::Point3D p
     cylObj.m_CylObj->SetOpacity(1); //before it was 0.3 semi-transparent
     cylObj.m_CylObj->SetHidden(false);
     cylObj.m_CylObj->SetListable(true); //RIZ changed to true if we want them to appear from the beggining - changed for now until problem iwht IBIS is solved!
-   // cylObj.m_CylObj->SetCrossSectionVisible(true); //RIZ: for now false since IBIS does not take it if default is true!
+    cylObj.m_CylObj->SetLineWidth(2); //TODO: UI controlled
+    // cylObj.m_CylObj->SetCrossSectionVisible(true); //RIZ: for now false since IBIS does not take it if default is true!
     //cylObj.m_CylObj->SetCrossSectionVisible(true);
    // cylObj.m_CylObj->MarkModified();
 
@@ -1399,7 +1400,6 @@ void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
     IbisAPI * api = m_pluginInterface->GetIbisAPI();
     if (dirName == QString("")) {
         dirName = api->GetExistingDirectory(tr("Select Directory to Save Electrode Files"), api->GetWorkingDirectory());
-
     }
     if (dirName != QString("")) {
         //dirname.append("/AllTrajectories");
