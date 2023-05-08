@@ -62,6 +62,7 @@ private:
     std::vector< seeg::SEEGElectrodeModel::Pointer > m_ElectrodeModelList;
 
     float m_SpacingResolution; //RIZ: this might be unnecessary...
+    int m_ElectrodeDisplayWidth;
 
     vector<QTableWidget *> m_VectorContactsTables; //vector of tables with trajectory lists (vector size is number of electrodes)
 
@@ -136,6 +137,8 @@ private slots:
 
     // adjust contact slot
     void on_pushButtonUpdateContactPosition_clicked();
+
+    void on_spinBoxElectrodeLineThickness_valueChanged(int value);
 
 private:
 

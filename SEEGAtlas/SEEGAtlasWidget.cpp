@@ -95,6 +95,8 @@ SEEGAtlasWidget::SEEGAtlasWidget(QWidget *parent) :
     scene->AddObject(m_TrajPlanMainObject, m_PlanningRootObject );
     scene->AddObject(m_SavedPlansObject, m_PlanningRootObject );
 
+    m_ElectrodeDisplayWidth = 1;
+
   // Init SEEGTrajVisWidget instance
     m_TrajVisWidget = new SEEGTrajVisWidget();
 
@@ -205,8 +207,8 @@ void SEEGAtlasWidget::InitUI()
     // but they are kept for compatibility
     ui->pushLoadDatasetsFromDir->setVisible(true);
     ui->comboBoxWhatToOpen->setVisible(true);
-    ui->horizontalSliderCylRadius->setVisible(true);
-    ui->horizontalSliderCylinderLength->setVisible(true);
+    ui->horizontalSliderCylRadius->setVisible(false);
+    ui->horizontalSliderCylinderLength->setVisible(false);
     ui->pushButtonFindAnatLocChannel->setVisible(true);
     ui->comboBoxBrainSegmentation->setVisible(false);
     ui->pushGenerateSurface->setVisible(false);
@@ -658,7 +660,7 @@ CylinderDisplay SEEGAtlasWidget::CreateCylinderObj(QString name, seeg::Point3D p
     cylObj.m_CylObj->SetOpacity(1); //before it was 0.3 semi-transparent
     cylObj.m_CylObj->SetHidden(false);
     cylObj.m_CylObj->SetListable(true); //RIZ changed to true if we want them to appear from the beggining - changed for now until problem iwht IBIS is solved!
-    cylObj.m_CylObj->SetLineWidth(2); //TODO: UI controlled
+    cylObj.m_CylObj->SetLineWidth(m_ElectrodeDisplayWidth);
     // cylObj.m_CylObj->SetCrossSectionVisible(true); //RIZ: for now false since IBIS does not take it if default is true!
     //cylObj.m_CylObj->SetCrossSectionVisible(true);
    // cylObj.m_CylObj->MarkModified();
@@ -2554,4 +2556,28 @@ void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
 //    m_AllPlans[iElec].isTargetSet = true;
 
 //    onUpdateElectrode(iElec);
+}
+
+void SEEGAtlasWidget::on_spinBoxElectrodeLineThickness_valueChanged(int value)
+{
+    m_ElectrodeDisplayWidth = value;
+    Q_ASSERT(m_pluginInterface);
+
+    IbisAPI * api = m_pluginInterface->GetIbisAPI();
+    QProgressDialog * progress = api->StartProgress(MAX_VISIBLE_PLANS, tr("Üpdating electrode display..."));
+
+    for( int iElec = 0; iElec < MAX_VISIBLE_PLANS; iElec++ )
+    {
+        if( m_AllPlans[iElec].isEntrySet && m_AllPlans[iElec].isTargetSet )
+        {
+            m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetLineWidth(m_ElectrodeDisplayWidth);
+            for( CylinderDisplay cylinder : m_SavedPlansData[iElec].m_ContactsDisplay )
+            {
+                cylinder.m_CylObj->SetLineWidth(m_ElectrodeDisplayWidth);
+            }
+        }
+        api->UpdateProgress(progress, iElec);
+    }
+
+    api->StopProgress(progress);
 }
