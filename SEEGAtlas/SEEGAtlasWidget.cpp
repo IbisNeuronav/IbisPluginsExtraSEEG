@@ -95,6 +95,8 @@ SEEGAtlasWidget::SEEGAtlasWidget(QWidget *parent) :
     scene->AddObject(m_TrajPlanMainObject, m_PlanningRootObject );
     scene->AddObject(m_SavedPlansObject, m_PlanningRootObject );
 
+    m_ElectrodeDisplayWidth = 1;
+
   // Init SEEGTrajVisWidget instance
     m_TrajVisWidget = new SEEGTrajVisWidget();
 
@@ -205,11 +207,13 @@ void SEEGAtlasWidget::InitUI()
     // but they are kept for compatibility
     ui->pushLoadDatasetsFromDir->setVisible(true);
     ui->comboBoxWhatToOpen->setVisible(true);
-    ui->horizontalSliderCylRadius->setVisible(true);
-    ui->horizontalSliderCylinderLength->setVisible(true);
+    ui->horizontalSliderCylRadius->setVisible(false);
+    ui->horizontalSliderCylinderLength->setVisible(false);
     ui->pushButtonFindAnatLocChannel->setVisible(true);
     ui->comboBoxBrainSegmentation->setVisible(false);
     ui->pushGenerateSurface->setVisible(false);
+    ui->horizontalSliderCylRadius->setEnabled(false);
+    ui->horizontalSliderCylinderLength->setEnabled(false);
 
     //Init Combo Box with Plans
     for( int iElec = 0; iElec < MAX_VISIBLE_PLANS; iElec++ ) { // Only 20 visible to start - MAX_SEEG_PLANS is now 1000!
@@ -381,7 +385,7 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
     dcolor[1] = double( m_PosColors[iElec].green() ) / 255.0;
     dcolor[2] = double( m_PosColors[iElec].blue() ) / 255.0;
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
-    UpdatePlan(iElec);
+    //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
     // Add also contacts all contacts of default electrode type (MNI)
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
@@ -525,7 +529,7 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedContacts(const int iElec, Point
     dcolor[1] = double( m_PosColors[iElec].green() ) / 255.0;
     dcolor[2] = double( m_PosColors[iElec].blue() ) / 255.0;
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
-    UpdatePlan(iElec);
+    //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
     for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
@@ -606,7 +610,7 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedChannels(const int iElec, seeg:
     dcolor[1] = double( m_PosColors[iElec].green() ) / 255.0;
     dcolor[2] = double( m_PosColors[iElec].blue() ) / 255.0;
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
-    UpdatePlan(iElec);
+    //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
     // Create channels
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateChannelCylinderObj("channel", pDeep, pSurface, m_ElectrodeModel);
@@ -645,7 +649,7 @@ CylinderDisplay SEEGAtlasWidget::CreateCylinderObj(QString name, seeg::Point3D p
     cylObj.m_Line->SetPoint2(p2[0], p2[1], p2[2]);
     cylObj.m_Cylinder = vtkSmartPointer<vtkTubeFilter>::New();
     cylObj.m_Cylinder->SetInputConnection(cylObj.m_Line->GetOutputPort());
-    cylObj.m_Cylinder->SetNumberOfSides(50);
+    cylObj.m_Cylinder->SetNumberOfSides(20);
     cylObj.m_Cylinder->CappingOn();
     cylObj.m_CylObj = PolyDataObject::New();
     cylObj.m_CylObj->SetName(name);
@@ -656,7 +660,8 @@ CylinderDisplay SEEGAtlasWidget::CreateCylinderObj(QString name, seeg::Point3D p
     cylObj.m_CylObj->SetOpacity(1); //before it was 0.3 semi-transparent
     cylObj.m_CylObj->SetHidden(false);
     cylObj.m_CylObj->SetListable(true); //RIZ changed to true if we want them to appear from the beggining - changed for now until problem iwht IBIS is solved!
-   // cylObj.m_CylObj->SetCrossSectionVisible(true); //RIZ: for now false since IBIS does not take it if default is true!
+    cylObj.m_CylObj->SetLineWidth(m_ElectrodeDisplayWidth);
+    // cylObj.m_CylObj->SetCrossSectionVisible(true); //RIZ: for now false since IBIS does not take it if default is true!
     //cylObj.m_CylObj->SetCrossSectionVisible(true);
    // cylObj.m_CylObj->MarkModified();
 
@@ -1392,9 +1397,11 @@ void SEEGAtlasWidget::onSavePlanningToDirectory() {
 
 void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
     // Save one file with all electrodes and one file per electrode with contacts' information
+    Q_ASSERT(m_pluginInterface);
+
+    IbisAPI * api = m_pluginInterface->GetIbisAPI();
     if (dirName == QString("")) {
-        QString baseDir = ui->labelDirBase->text();
-        dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Electrode Files"), baseDir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
+        dirName = api->GetExistingDirectory(tr("Select Directory to Save Electrode Files"), api->GetWorkingDirectory());
     }
     if (dirName != QString("")) {
         //dirname.append("/AllTrajectories");
@@ -1419,14 +1426,18 @@ void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
         map<string,ElectrodeInfo::Pointer>::iterator elecIt;
         map<string,ElectrodeInfo::Pointer> bestCohort;
         bestCohort = m_SEEGElectrodesCohort->GetBestCohort();
-        for (elecIt = bestCohort.begin(); elecIt != bestCohort.end(); elecIt++) {
+        QProgressDialog *progress = api->StartProgress(bestCohort.size(), tr("Saving electrodes in dir: ") + dirName);
+        int i;
+        for (elecIt = bestCohort.begin(), i = 0; elecIt != bestCohort.end(); elecIt++, i++) {
             string elName = elecIt->first;
             ElectrodeInfo::Pointer el = elecIt->second;
             string filename = dirName.toStdString() + "/"+ string(FILE_RESULTS_TRAJ_GRAL)+ elName  + string(FILE_POS_FIX);
 			qDebug() <<"Saving electrode: " << elName.c_str() <<" in file: "<< filename.c_str();
 
             el->SaveElectrodeDataToFile (filename, DELIMITER_TRAJFILE);
+            api->UpdateProgress(progress, i);
         }
+        api->StopProgress(progress);
     }
 }
 
@@ -2545,4 +2556,28 @@ void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
 //    m_AllPlans[iElec].isTargetSet = true;
 
 //    onUpdateElectrode(iElec);
+}
+
+void SEEGAtlasWidget::on_spinBoxElectrodeLineThickness_valueChanged(int value)
+{
+    m_ElectrodeDisplayWidth = value;
+    Q_ASSERT(m_pluginInterface);
+
+    IbisAPI * api = m_pluginInterface->GetIbisAPI();
+    QProgressDialog * progress = api->StartProgress(MAX_VISIBLE_PLANS, tr("Üpdating electrode display..."));
+
+    for( int iElec = 0; iElec < MAX_VISIBLE_PLANS; iElec++ )
+    {
+        if( m_AllPlans[iElec].isEntrySet && m_AllPlans[iElec].isTargetSet )
+        {
+            m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetLineWidth(m_ElectrodeDisplayWidth);
+            for( CylinderDisplay cylinder : m_SavedPlansData[iElec].m_ContactsDisplay )
+            {
+                cylinder.m_CylObj->SetLineWidth(m_ElectrodeDisplayWidth);
+            }
+        }
+        api->UpdateProgress(progress, iElec);
+    }
+
+    api->StopProgress(progress);
 }
