@@ -392,6 +392,7 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
     m_SavedPlansData[iElec].m_PointRepresentation = seeg::SEEGPointRepresentation::New();
     m_SavedPlansData[iElec].m_PointRepresentation->SetPointsRadius(m_ElectrodeModel->GetRecordingRadius());
     m_SavedPlansData[iElec].m_PointRepresentation->SetColor(dcolor);
+    m_SavedPlansData[iElec].m_PointRepresentation->SetName(m_AllPlans[iElec].name);
     scene->AddObject(m_SavedPlansData[iElec].m_PointRepresentation->GetPointsObject(), m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
 
     // Add also contacts all contacts of default electrode type (MNI)
@@ -417,6 +418,7 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
 void SEEGAtlasWidget::DeleteElectrode(const int iElec) {
     if (m_SavedPlansData[iElec].m_ContactsDisplay.size()>0) {
 		qDebug() << "Entering DeleteElectrode " <<iElec;
+        m_SavedPlansData[iElec].m_PointRepresentation->Delete();
         m_SavedPlansObject->RemoveChild(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
         for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
             m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->RemoveChild(m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj);
@@ -426,6 +428,7 @@ void SEEGAtlasWidget::DeleteElectrode(const int iElec) {
      //   m_SavedPlansData[iElec].m_ElectrodeDisplay.m_Cylinder->Delete();
         m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetHidden(true);
         m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->Delete();
+
 		qDebug() << "Leaving DeleteElectrode";
     }
 }
@@ -859,6 +862,7 @@ void SEEGAtlasWidget::onUpdateElectrode(int iElec) {
         } else {
             RefreshChannelsTable(iElec);
         }
+
     }
 
     //Create All Electrodes (including active) again
@@ -1209,6 +1213,8 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
     Application &app = Application::GetInstance();
     SceneManager *scene = app.GetSceneManager();
     scene->SetCursorWorldPosition(contactPosition);
+
+    m_SavedPlansData[iElec].m_PointRepresentation->SelectPoint(iContact);
 
 	qDebug() <<"onTrajectoryTableCellChange Contact " << contactName.c_str() << " - "<<iContact<<" - Position:"<<contactPosition[0]<<" "<< contactPosition[1]<<" "<<contactPosition[2];
 

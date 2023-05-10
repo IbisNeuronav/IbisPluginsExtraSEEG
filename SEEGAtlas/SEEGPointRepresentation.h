@@ -42,10 +42,16 @@ public:
     void ShowPoints();
     void HidePoints();
 
+    void SelectPoint(int index);
+
     void SetColor(double color[3]);
     double * GetColor();
 
     void SetPointsRadius(double radius);
+
+    int GetNumberOfPoints();
+
+    void Delete();
 
 private:
 

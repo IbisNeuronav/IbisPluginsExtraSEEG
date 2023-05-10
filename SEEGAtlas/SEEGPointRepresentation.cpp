@@ -18,6 +18,7 @@ SEEGPointRepresentation::SEEGPointRepresentation(SceneObject * parent)
     m_points->SetCanChangeParent(false);
     m_points->SetCanAppendChildren(false);
     m_points->SetCanEditTransformManually(false);
+    m_points->SetPickabilityLocked(true);
     m_points->SetNameChangeable(false);
     m_points->ShowLabels(false);
     m_points->Set3DRadius(0);
@@ -95,6 +96,11 @@ void SEEGPointRepresentation::HidePoints()
     m_points->SetHidden(true);
 }
 
+void SEEGPointRepresentation::SelectPoint(int index)
+{
+    m_points->SetSelectedPoint(index);
+}
+
 void SEEGPointRepresentation::SetColor(double color[3])
 {
     Q_ASSERT(m_points);
@@ -110,6 +116,16 @@ double * SEEGPointRepresentation::GetColor()
 void SEEGPointRepresentation::SetPointsRadius(double radius)
 {
     m_points->Set2DRadius(radius);
+}
+
+int SEEGPointRepresentation::GetNumberOfPoints()
+{
+    return m_points->GetNumberOfPoints();
+}
+
+void SEEGPointRepresentation::Delete()
+{
+    m_points->Delete();
 }
 
 } // end of namespace seeg
