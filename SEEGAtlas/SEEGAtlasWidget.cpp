@@ -4,6 +4,7 @@
 #include "Point3DInputDialog.h"
 #include "ContactsListTableWidget.h"
 #include "NameInputDialog.h"
+#include <SEEGPointRepresentation.h>
 
 // IBIS include
 #include "application.h"
@@ -387,15 +388,28 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetColor(dcolor);
     //UpdatePlan(iElec);
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
+
+    m_SavedPlansData[iElec].m_PointRepresentation = seeg::SEEGPointRepresentation::New();
+    m_SavedPlansData[iElec].m_PointRepresentation->SetPointsRadius(m_ElectrodeModel->GetRecordingRadius());
+    m_SavedPlansData[iElec].m_PointRepresentation->SetColor(dcolor);
+    m_SavedPlansData[iElec].m_PointRepresentation->SetName(m_AllPlans[iElec].name);
+    scene->AddObject(m_SavedPlansData[iElec].m_PointRepresentation->GetPointsObject(), m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
+
     // Add also contacts all contacts of default electrode type (MNI)
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
+    std::vector<seeg::Point3D> allContactsCentralPt;
+    m_ElectrodeModel->CalcAllContactPositions(pDeep, pSurface, allContactsCentralPt, false);
     for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
         scene->AddObject(m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj, m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
         m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_Cylinder->SetRadius((electrodeDiameter / 2.0) + 0.3);
         m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj->SetCrossSectionVisible(true); //RIZ20151130 moved here (after contacts are assigned to the scene, IBIS was crashing otherwise
+        m_SavedPlansData[iElec].m_PointRepresentation->InsertNextPoint(allContactsCentralPt[iContact][0], allContactsCentralPt[iContact][1], allContactsCentralPt[iContact][2]);
     }
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetCrossSectionVisible(true); //RIZ20151130: moved here (after contacts are assigned to the scene, IBIS was crashing otherwise
+    m_SavedPlansData[iElec].m_PointRepresentation->ShowPoints();
     UpdatePlan(iElec);
+
+
     //add also type of electrode
     m_SavedPlansData[iElec].m_ElectrodeModel = m_ElectrodeModel;
 	qDebug() << "Leaving CreateElectrode"<< iElec;
@@ -404,6 +418,7 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
 void SEEGAtlasWidget::DeleteElectrode(const int iElec) {
     if (m_SavedPlansData[iElec].m_ContactsDisplay.size()>0) {
 		qDebug() << "Entering DeleteElectrode " <<iElec;
+        m_SavedPlansData[iElec].m_PointRepresentation->Delete();
         m_SavedPlansObject->RemoveChild(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
         for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
             m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->RemoveChild(m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj);
@@ -413,6 +428,7 @@ void SEEGAtlasWidget::DeleteElectrode(const int iElec) {
      //   m_SavedPlansData[iElec].m_ElectrodeDisplay.m_Cylinder->Delete();
         m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetHidden(true);
         m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->Delete();
+
 		qDebug() << "Leaving DeleteElectrode";
     }
 }
@@ -846,6 +862,7 @@ void SEEGAtlasWidget::onUpdateElectrode(int iElec) {
         } else {
             RefreshChannelsTable(iElec);
         }
+
     }
 
     //Create All Electrodes (including active) again
@@ -1196,6 +1213,8 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
     Application &app = Application::GetInstance();
     SceneManager *scene = app.GetSceneManager();
     scene->SetCursorWorldPosition(contactPosition);
+
+    m_SavedPlansData[iElec].m_PointRepresentation->SelectPoint(iContact);
 
 	qDebug() <<"onTrajectoryTableCellChange Contact " << contactName.c_str() << " - "<<iContact<<" - Position:"<<contactPosition[0]<<" "<< contactPosition[1]<<" "<<contactPosition[2];
 

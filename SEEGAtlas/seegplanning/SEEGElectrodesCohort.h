@@ -6,6 +6,7 @@
 //#include "SEEGTrajectoryROIPipeline.h"
 #include "SEEGElectrodeModel.h"
 #include "ElectrodeInfo.h"
+#include <SEEGPointRepresentation.h>
 
 using namespace std;
 namespace seeg {
@@ -26,6 +27,8 @@ class SEEGElectrodesCohort
         SEEGElectrodeModel::Pointer m_ElectrodeModel; // electrodeModel could be selected as MNI or DIXI
 
         float m_SpacingResolution; // spacing to consider when looking at all the points in a trajectory
+
+        SEEGPointRepresentation::Pointer m_Points;
 
     public:
         // smart pointer
