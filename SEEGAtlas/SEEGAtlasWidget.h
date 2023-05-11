@@ -36,10 +36,15 @@ struct CylinderDisplay {
 };
 
 struct ElectrodeDisplay{
+    bool defined;
     CylinderDisplay m_ElectrodeDisplay;
     std::vector<CylinderDisplay> m_ContactsDisplay;
     seeg::SEEGElectrodeModel::Pointer m_ElectrodeModel;
     seeg::SEEGPointRepresentation::Pointer m_PointRepresentation;
+
+    ElectrodeDisplay() {
+        defined = false;
+    }
 };
 
 

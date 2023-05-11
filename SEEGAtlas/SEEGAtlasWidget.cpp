@@ -96,6 +96,8 @@ SEEGAtlasWidget::SEEGAtlasWidget(QWidget *parent) :
     scene->AddObject(m_TrajPlanMainObject, m_PlanningRootObject );
     scene->AddObject(m_SavedPlansObject, m_PlanningRootObject );
 
+    Application::GetInstance().GetSceneManager()->RemoveAllChildrenObjects(this->m_SavedPlansObject);
+
     m_ElectrodeDisplayWidth = 1;
 
   // Init SEEGTrajVisWidget instance
@@ -343,7 +345,7 @@ void SEEGAtlasWidget::CreateAllElectrodes(bool showProgress) {
     this->UpdateConfigurationFromUi(); //TODO check if needed?
 
     // Delete ALL electrodes
-    Application::GetInstance().GetSceneManager()->RemoveAllChildrenObjects(this->m_SavedPlansObject);
+    ibisApi->RemoveAllChildrenObjects(this->m_SavedPlansObject);
     
     // Create each electrode
     for (int iElec=0; iElec<MAX_SEEG_PLANS; iElec++) {
@@ -364,10 +366,14 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec) {
     Point3D pTargetPoint = m_AllPlans[iElec].targetPoint;
     Point3D pEntryPointLong;
 
-    double electrodeLength = ui->lineEditCylinderLength->text().toFloat();
+    string electrodeName = m_AllPlans[iElec].name;
+    ElectrodeInfo::Pointer electrode = m_SEEGElectrodesCohort->GetTrajectoryInBestCohort(electrodeName);
+    if(!electrode) return;
+
+    double electrodeLength = electrode->GetElectrodeModel()->GetElectrodeHeight();
     Resize3DLineSegmentSingleSide(m_AllPlans[iElec].targetPoint, m_AllPlans[iElec].entryPoint, electrodeLength, pEntryPointLong);
-   // m_AllPlans[iElec].entryPoint = pEntryPointLong; // RIZ2022: update entry point to long point
-    CreateElectrode(iElec, pTargetPoint ,pEntryPointLong);
+//    m_AllPlans[iElec].entryPoint = pEntryPointLong; // RIZ2022: update entry point to long point
+    CreateElectrode(iElec, pTargetPoint, pEntryPointLong);
 }
 
 void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pSurface) {
@@ -375,8 +381,11 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
 
     SceneManager *scene = Application::GetInstance().GetSceneManager();
 
-    QString strDiameter =ui->lineEditCylRadius->text();
-    double electrodeDiameter = strDiameter.toFloat();
+    string electrodeName = m_AllPlans[iElec].name;
+    ElectrodeInfo::Pointer electrode = m_SEEGElectrodesCohort->GetTrajectoryInBestCohort(electrodeName);
+    if(!electrode) return;
+
+    double electrodeDiameter = electrode->GetElectrodeModel()->GetContactDiameter();
 
     m_SavedPlansData[iElec].m_ElectrodeDisplay = CreateCylinderObj(m_AllPlans[iElec].name.c_str(), pDeep, pSurface);
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_Cylinder->SetRadius((electrodeDiameter / 2.0));
@@ -390,20 +399,32 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
     scene->AddObject(m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj, m_SavedPlansObject);
 
     m_SavedPlansData[iElec].m_PointRepresentation = seeg::SEEGPointRepresentation::New();
-    m_SavedPlansData[iElec].m_PointRepresentation->SetPointsRadius(m_ElectrodeModel->GetRecordingRadius());
+    m_SavedPlansData[iElec].m_PointRepresentation->SetPointsRadius(electrode->GetElectrodeModel()->GetRecordingRadius());
     m_SavedPlansData[iElec].m_PointRepresentation->SetColor(dcolor);
     m_SavedPlansData[iElec].m_PointRepresentation->SetName(m_AllPlans[iElec].name);
     scene->AddObject(m_SavedPlansData[iElec].m_PointRepresentation->GetPointsObject(), m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
 
     // Add also contacts all contacts of default electrode type (MNI)
-    m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
+    m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, electrode->GetElectrodeModel());
     std::vector<seeg::Point3D> allContactsCentralPt;
-    m_ElectrodeModel->CalcAllContactPositions(pDeep, pSurface, allContactsCentralPt, false);
+    electrode->GetElectrodeModel()->CalcAllContactPositions(pDeep, pSurface, allContactsCentralPt, false);
+
+    vector<ContactInfo::Pointer> contactList;
+    if(electrode) contactList = electrode->GetAllContacts();
+
     for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
         scene->AddObject(m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj, m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
         m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_Cylinder->SetRadius((electrodeDiameter / 2.0) + 0.3);
         m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj->SetCrossSectionVisible(true); //RIZ20151130 moved here (after contacts are assigned to the scene, IBIS was crashing otherwise
-        m_SavedPlansData[iElec].m_PointRepresentation->InsertNextPoint(allContactsCentralPt[iContact][0], allContactsCentralPt[iContact][1], allContactsCentralPt[iContact][2]);
+        if(iContact < contactList.size())
+        {
+            seeg::Point3D savedCentralPoint = contactList[iContact]->GetCentralPoint();
+            m_SavedPlansData[iElec].m_PointRepresentation->InsertNextPoint(savedCentralPoint[0], savedCentralPoint[1], savedCentralPoint[2]);
+        }
+        else
+        {
+            m_SavedPlansData[iElec].m_PointRepresentation->InsertNextPoint(allContactsCentralPt[iContact][0], allContactsCentralPt[iContact][1], allContactsCentralPt[iContact][2]);
+        }
     }
     m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj->SetCrossSectionVisible(true); //RIZ20151130: moved here (after contacts are assigned to the scene, IBIS was crashing otherwise
     m_SavedPlansData[iElec].m_PointRepresentation->ShowPoints();
@@ -411,9 +432,10 @@ void SEEGAtlasWidget::CreateElectrode(const int iElec, Point3D pDeep, Point3D pS
 
 
     //add also type of electrode
-    m_SavedPlansData[iElec].m_ElectrodeModel = m_ElectrodeModel;
+    m_SavedPlansData[iElec].m_ElectrodeModel = electrode->GetElectrodeModel();
 	qDebug() << "Leaving CreateElectrode"<< iElec;
 }
+
 
 void SEEGAtlasWidget::DeleteElectrode(const int iElec) {
     if (m_SavedPlansData[iElec].m_ContactsDisplay.size()>0) {
@@ -845,6 +867,8 @@ void SEEGAtlasWidget::onSetEntryPointFromCursor() {
 }
 
 void SEEGAtlasWidget::onUpdateElectrode(int iElec) {
+    if( iElec < 0 ) return;
+
     if (m_AllPlans[iElec].isTargetSet && m_AllPlans[iElec].isEntrySet) {
         // Add electrode to cohort
         addElectrodeToCohort(iElec);
@@ -1598,7 +1622,15 @@ void SEEGAtlasWidget::on_comboBoxElectrodeType_currentIndexChanged(int index){
     
     //SEEGElectrodesCohort::Pointer pathCohortObj = GetSEEGElectrodesCohort();
     m_SEEGElectrodesCohort->SetElectrodeModel(m_ElectrodeModel);
-    
+
+    int iElec = ui->comboBoxPlanSelect->currentIndex();
+    onUpdateElectrode(iElec);
+
+//    m_SEEGElectrodesCohort->GetBestCohort();
+//    string electrodeName = m_AllPlans[iElec].name;
+//    ElectrodeInfo::Pointer electrode = m_SEEGElectrodesCohort->GetTrajectoryInBestCohort(electrodeName);
+//    if(!electrode) return;
+
     // Create visual electrodes again
     CreateAllElectrodes(true);
     
@@ -2529,6 +2561,7 @@ void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
     double contactPosition[3];
     api->GetCursorPosition(contactPosition);
 
+    // update table contact position
     for (int i=0; i<3; i++){ //column 0 is name / 1-3 columns are target / 4-6 columns are entry
         QTableWidgetItem * item = new QTableWidgetItem();
         item->setText( QString::number(contactPosition[i]) );
@@ -2543,6 +2576,7 @@ void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
     contact->SetCentralPoint(contactPosition);
     electrode->ReplaceContact(contact, iContact);
 
+    // update table ui location
     if (contact->m_IsLocationSet)
     {
         {
@@ -2557,6 +2591,8 @@ void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
             table->setItem(iContact, 5, item);
         }
     }
+
+    m_SavedPlansData[iElec].m_PointRepresentation->SetPointPosition(iContact, contactPosition);
 
     ///TODO: work in progress
     /// - update probability and location

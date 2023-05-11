@@ -121,7 +121,7 @@ namespace seeg {
     void SEEGElectrodesCohort::SetElectrodeModel(SEEGElectrodeModel::Pointer electrodeModel){
         m_ElectrodeModel = electrodeModel; //assign type of electrode to cohort
         // change also in each electrode in best cohort
-        map<string, ElectrodeInfo::Pointer> bestCohort = GetBestCohort();
+        //map<string, ElectrodeInfo::Pointer> bestCohort = GetBestCohort();
 
         //// Get bounding box of each electrode
         //map<string, ElectrodeInfo::Pointer>::const_iterator it1;
