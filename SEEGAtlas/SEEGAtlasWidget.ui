@@ -39,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>544</width>
-        <height>1028</height>
+        <width>559</width>
+        <height>1014</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -685,7 +685,7 @@
             <item>
              <widget class="QPushButton" name="pushButtonUpdateContactPosition">
               <property name="enabled">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update position of the currently selected contact in the table to cursor position&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

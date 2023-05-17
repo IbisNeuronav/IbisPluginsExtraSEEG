@@ -1175,6 +1175,12 @@ void SEEGAtlasWidget::onTabSelect(int indTab) {
         onPlanSelect(iElec);
         //RefreshPlanCoords(iElec); //RIZ20151210 test if this is sufficient
     }
+    ui->pushButtonUpdateContactPosition->setEnabled(false);
+    for (int iElec = 0; iElec < GetNumberElectrodes(); ++iElec)
+    {
+        if(m_SavedPlansData[iElec].m_PointRepresentation)
+            m_SavedPlansData[iElec].m_PointRepresentation->SelectPoint(-1);
+    }
 }
 
 void SEEGAtlasWidget::onShowContactsChannelsTable(bool isChecked){
@@ -1245,7 +1251,6 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
     SceneManager *scene = app.GetSceneManager();
     scene->SetCursorWorldPosition(contactPosition);
 
-
     for (int i = 0; i < GetNumberElectrodes(); ++i)
     {
         if(ui->pushButtonShowContactsTable->isChecked())
@@ -1260,6 +1265,12 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
             m_SavedPlansData[i].m_PointRepresentation->SelectPoint(-1);
         }
     }
+
+    if(ui->pushButtonShowContactsTable->isChecked())
+    {
+        ui->pushButtonUpdateContactPosition->setEnabled(true);
+    }
+
 
 	qDebug() <<"onTrajectoryTableCellChange Contact " << contactName.c_str() << " - "<<iContact<<" - Position:"<<contactPosition[0]<<" "<< contactPosition[1]<<" "<<contactPosition[2];
 
