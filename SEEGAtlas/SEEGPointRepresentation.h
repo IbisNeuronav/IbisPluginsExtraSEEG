@@ -43,6 +43,7 @@ public:
     void HidePoints();
 
     void SelectPoint(int index);
+    int GetSelectedPoint();
 
     void SetColor(double color[3]);
     double * GetColor();

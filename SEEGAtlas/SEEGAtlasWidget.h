@@ -146,7 +146,11 @@ private slots:
     // adjust contact slot
     void on_pushButtonUpdateContactPosition_clicked();
 
+    // change thinckness of electrode representation
     void on_spinBoxElectrodeLineThickness_valueChanged(int value);
+
+    // show/hide contact radius
+    void on_checkBoxShowContactRadius_stateChanged(int checked);
 
 private:
 

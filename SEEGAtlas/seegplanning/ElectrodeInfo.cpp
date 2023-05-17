@@ -23,6 +23,7 @@ ElectrodeInfo::ElectrodeInfo() {
     m_ElectrodeVectorWorld.y=0;
     m_ElectrodeVectorWorld.z=0;
     m_ElectrodeName = "";
+    m_ElectrodeModel = nullptr;
     m_Valid = false;
 }
 
@@ -76,6 +77,7 @@ seeg::SEEGElectrodeModel::Pointer ElectrodeInfo::GetElectrodeModel()
 }
 
 void ElectrodeInfo::SetElectrodeModel(seeg::SEEGElectrodeModel::Pointer electrodeModel){
+    if(!m_ElectrodeModel) m_ElectrodeModel = SEEGElectrodeModel::New();
     m_ElectrodeModel->DeepCopy(electrodeModel);
 }
 
