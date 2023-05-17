@@ -901,7 +901,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_7">
               <property name="text">
-               <string>Electrode thickness (mm)</string>
+               <string>Electrode thickness</string>
               </property>
              </widget>
             </item>

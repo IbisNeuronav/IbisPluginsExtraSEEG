@@ -227,13 +227,10 @@ void SEEGAtlasWidget::InitUI()
     ui->lineEditCylRadius->setReadOnly(true);
     ui->lineEditCylinderLength->setReadOnly(true);
 
-    ui->checkBoxImagePlanes->setChecked(false);
-    for( int i = 0; i < 3; i++ )
-    {
-        bool isChecked = Application::GetInstance().GetSceneManager()->IsPlaneVisible(i);
-        if( isChecked )
-            ui->checkBoxImagePlanes->setChecked(isChecked);
-    }
+    Application::GetInstance().GetSceneManager()->ViewPlane(0, true);
+    Application::GetInstance().GetSceneManager()->ViewPlane(1, true);
+    Application::GetInstance().GetSceneManager()->ViewPlane(2, true);
+    ui->checkBoxImagePlanes->setChecked(true);
 
     //Fill the combobox with the images whose contour surface will be generated
     FillComboBoxBrainSegmentation();
