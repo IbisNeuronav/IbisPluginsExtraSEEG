@@ -217,6 +217,11 @@ void SEEGAtlasWidget::InitUI()
     ui->pushGenerateSurface->setVisible(false);
     ui->horizontalSliderCylRadius->setEnabled(false);
     ui->horizontalSliderCylinderLength->setEnabled(false);
+    ui->pushButtonBatch->setEnabled(false);
+    ui->pushButtonBatch->setVisible(false);
+    ui->pushButtonBatch->setEnabled(false);
+    ui->pushButtonShowOnlyContacts->setEnabled(false);
+    ui->pushButtonShowOnlyChannels->setEnabled(false);
 
     //Init Combo Box with Plans
     for( int iElec = 0; iElec < MAX_VISIBLE_PLANS; iElec++ ) { // Only 20 visible to start - MAX_SEEG_PLANS is now 1000!
