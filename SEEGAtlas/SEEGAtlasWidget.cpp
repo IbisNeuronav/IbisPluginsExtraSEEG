@@ -2671,3 +2671,21 @@ void SEEGAtlasWidget::on_spinBoxElectrodeLineThickness_valueChanged(int value)
 
     api->StopProgress(progress);
 }
+
+void SEEGAtlasWidget::on_checkBoxShowContactRadius_stateChanged(int checked)
+{
+    for (int iElec = 0; iElec < GetNumberElectrodes(); ++iElec)
+    {
+        if(m_SavedPlansData[iElec].m_PointRepresentation)
+        {
+            if(checked == Qt::Unchecked)
+            {
+                m_SavedPlansData[iElec].m_PointRepresentation->HidePoints();
+            }
+            else
+            {
+                m_SavedPlansData[iElec].m_PointRepresentation->ShowPoints();
+            }
+        }
+    }
+}
