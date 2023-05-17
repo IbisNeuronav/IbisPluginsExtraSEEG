@@ -373,7 +373,7 @@ namespace seeg {
 
         //reads 3 volumes (gralName_x.mnc gralName_y.mnc gralName_z.mnc containing component of normals in each direction)
         if (!VolumeExists(groupName, gralName+DIM0)) {
-            cout << "Volume Not Found in OpenFloatVectorVolume. group: " << groupName << " name: " << gralName+DIM0 << endl;
+            cout << "Volume Not Found in OpenFloatVectorVolume. group: " << groupName << " name: " << gralName+DIM0 << std::endl;
         }
         DataSetInfo* ds;
         FloatVolume::Pointer vol;
@@ -397,11 +397,11 @@ namespace seeg {
                        const std::string& filename,
                        const std::string& name) {
 
-        cout << "In LoadVolume: group: " << groupName << " name: " << name << " File: " << filename << endl;
+        cout << "In LoadVolume: group: " << groupName << " name: " << name << " File: " << filename << std::endl;
 
         // first, check if file exist
         if (!IsFileExists(filename)) {
-            cout << "In LoadVolume: File " << filename << " not found" << endl;
+            cout << "In LoadVolume: File " << filename << " not found" << std::endl;
             return;
         }
 
@@ -430,7 +430,7 @@ namespace seeg {
     FloatVolume::Pointer OpenFloatVolume (const std::string& groupName, const std::string& name) {
 
         if (!VolumeExists(groupName, name)) {
-            cout << "Volume Not Found in OpenFloatVolume. group: " << groupName << " name: " << name << endl;
+            cout << "Volume Not Found in OpenFloatVolume. group: " << groupName << " name: " << name << std::endl;
             return FloatVolume::Pointer();
         }
         return ReadFloatVolume(m_GroupInfoMap[groupName].datasetMap[name].filename);
@@ -438,7 +438,7 @@ namespace seeg {
 
     IntVolume::Pointer OpenIntVolume (const std::string& groupName, const std::string& name) {
         if (!VolumeExists(groupName, name)) {
-            cout << "Volume Not Found in OpenIntVolume. group: " << groupName << " name: " << name << endl;
+            cout << "Volume Not Found in OpenIntVolume. group: " << groupName << " name: " << name << std::endl;
             return IntVolume::Pointer();
         }
         return ReadIntVolume(m_GroupInfoMap[groupName].datasetMap[name].filename);
@@ -446,7 +446,7 @@ namespace seeg {
 
     ByteVolume::Pointer OpenByteVolume (const std::string& groupName, const std::string& name) {
         if (!VolumeExists(groupName, name)) {
-            cout << "Volume Not Found in OpenByteVolume. group: " << groupName << " name: " << name << endl;
+            cout << "Volume Not Found in OpenByteVolume. group: " << groupName << " name: " << name << std::endl;
             return ByteVolume::Pointer();
         }
 
