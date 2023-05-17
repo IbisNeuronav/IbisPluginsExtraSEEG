@@ -941,6 +941,7 @@ void SEEGAtlasWidget::addElectrodeToCohort(int iElec) {
 
     //Add to cohort
     addElectrodeToCohort(iElec, electrode);
+    ReplaceElectrodeName(iElec, m_AllPlans[iElec].name);
 }
 
 void SEEGAtlasWidget::addElectrodeToCohort(int iElec, ElectrodeInfo::Pointer electrode) {
@@ -1162,12 +1163,18 @@ void SEEGAtlasWidget::onChangeElectrodeName(const string newElectrodeName) {
 
 // RESULTS INTERACTION (Tables in Tabs)
 void SEEGAtlasWidget::onTabSelect(int indTab) {
-     ui->tabWidgetScores->setCurrentIndex(indTab);
-     int iElec = indTab-1; //RIZ: first TAB of table is BEST trajectories, subsequent are contacts information for each electrode
-     if (iElec>=0 && iElec != ui->comboBoxPlanSelect->currentIndex()) {
-         onPlanSelect(iElec);
-         //RefreshPlanCoords(iElec); //RIZ20151210 test if this is sufficient
-     }
+
+    // clear all selected contact in tables
+    for (int iTab = 0; iTab < m_VectorContactsTables.size(); ++iTab)
+    {
+        m_VectorContactsTables[iTab]->clearSelection();
+    }
+    ui->tabWidgetScores->setCurrentIndex(indTab);
+    int iElec = indTab-1; //RIZ: first TAB of table is BEST trajectories, subsequent are contacts information for each electrode
+    if (iElec>=0 && iElec != ui->comboBoxPlanSelect->currentIndex()) {
+        onPlanSelect(iElec);
+        //RefreshPlanCoords(iElec); //RIZ20151210 test if this is sufficient
+    }
 }
 
 void SEEGAtlasWidget::onShowContactsChannelsTable(bool isChecked){
@@ -1238,7 +1245,21 @@ void SEEGAtlasWidget::onTrajectoryTableCellChange(int newRow, int newCol, int ol
     SceneManager *scene = app.GetSceneManager();
     scene->SetCursorWorldPosition(contactPosition);
 
-    m_SavedPlansData[iElec].m_PointRepresentation->SelectPoint(iContact);
+
+    for (int i = 0; i < GetNumberElectrodes(); ++i)
+    {
+        if(ui->pushButtonShowContactsTable->isChecked())
+        {
+            if( i == iElec )
+                m_SavedPlansData[iElec].m_PointRepresentation->SelectPoint(iContact);
+            else
+                m_SavedPlansData[i].m_PointRepresentation->SelectPoint(-1);
+        }
+        else
+        {
+            m_SavedPlansData[i].m_PointRepresentation->SelectPoint(-1);
+        }
+    }
 
 	qDebug() <<"onTrajectoryTableCellChange Contact " << contactName.c_str() << " - "<<iContact<<" - Position:"<<contactPosition[0]<<" "<< contactPosition[1]<<" "<<contactPosition[2];
 
@@ -2296,6 +2317,7 @@ void SEEGAtlasWidget::RefreshAllPlanCoords() {
     for (int iElec=0;iElec<nLocations;iElec++){
         //RefreshPlanCoords(iLoc, electrodeNames[iLoc]);
         RefreshPlanCoords(iElec);
+        m_SavedPlansData[iElec].m_PointRepresentation->SelectPoint(-1);
     }
 }
 
@@ -2549,10 +2571,12 @@ void SEEGAtlasWidget::on_pushButtonUpdateContactPosition_clicked()
     int indTab = ui->tabWidgetScores->currentIndex();
     int iElec = indTab-1;
 
-    if (iElec > m_VectorContactsTables.size() || iElec < 0) {return;}
+    if( iElec > m_VectorContactsTables.size() || iElec < 0 ) {return;}
+    if( m_SavedPlansData[iElec].m_PointRepresentation->GetSelectedPoint() == -1 ) return;
     QTableWidget* table = m_VectorContactsTables[iElec];
 
     int iContact = table->currentRow();
+    if(iContact < 0) return;
 
     //First column is electrode name
     string contactName = table->item(iContact, 0)->text().toStdString();

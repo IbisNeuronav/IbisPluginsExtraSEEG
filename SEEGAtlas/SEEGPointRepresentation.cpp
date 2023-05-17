@@ -98,7 +98,18 @@ void SEEGPointRepresentation::HidePoints()
 
 void SEEGPointRepresentation::SelectPoint(int index)
 {
+    if( index == -1 )
+    {
+        m_points->UnselectAllPoints();
+        return;
+    }
+
     m_points->SetSelectedPoint(index);
+}
+
+int SEEGPointRepresentation::GetSelectedPoint()
+{
+    return m_points->GetSelectedPointIndex();
 }
 
 void SEEGPointRepresentation::SetColor(double color[3])
