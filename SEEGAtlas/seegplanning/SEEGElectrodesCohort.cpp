@@ -244,7 +244,7 @@ namespace seeg {
                 status=true;
 
             } else if (token == "[order]") {
-                cout <<"order:"<< token.c_str()<<endl;
+                cout <<"order:"<< token.c_str()<<std::endl;
                 getline(ss, token, delimiter);
                 break;
             } else {
@@ -260,11 +260,11 @@ namespace seeg {
 
     void SEEGElectrodesCohort::SaveSEEGBestCohortDataToFile(const string& filename, const char delimiter){
         // Saves best trajectory
-        cout<<"Saving All Electrodes information to "<<filename<< endl;
+        cout<<"Saving All Electrodes information to "<<filename<< std::endl;
         ofstream file;
         file.open(filename.c_str());
-        file << "[fileType]"<< delimiter<< "Cohort" << endl;
-        file << "[electrodeType]"<< delimiter<< m_ElectrodeModel->GetElectrodeId() <<delimiter<< m_SpacingResolution << endl; //RIZ: this might be removed...
+        file << "[fileType]"<< delimiter<< "Cohort" << std::endl;
+        file << "[electrodeType]"<< delimiter<< m_ElectrodeModel->GetElectrodeId() <<delimiter<< m_SpacingResolution << std::endl; //RIZ: this might be removed...
 
         //Get weights info from first trajectory in full cohort
       //  string electrodeName = m_Cohort.begin()->first;
@@ -291,10 +291,10 @@ namespace seeg {
                 file << el->m_Valid << delimiter;
 
                 //finish trajectory line and move to next trajectory in Best Cohort
-                file << endl;
+                file << std::endl;
             }
         }
-        file << "[order]"<< delimiter<< "ElectrodeName"<< delimiter<<"indexElectrode"<< delimiter<<"targetx"<< delimiter<<"targety"<< delimiter<<"targetz"<< delimiter<<"entryx"<< delimiter<<"entryy"<< delimiter<<"entryz"<< endl;
+        file << "[order]"<< delimiter<< "ElectrodeName"<< delimiter<<"indexElectrode"<< delimiter<<"targetx"<< delimiter<<"targety"<< delimiter<<"targetz"<< delimiter<<"entryx"<< delimiter<<"entryy"<< delimiter<<"entryz"<< std::endl;
 
         file.close();
 
