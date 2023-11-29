@@ -99,14 +99,14 @@ namespace seeg {
         RemoveActor(name);
         m_AllActors[name] = actor;
         m_Renderer->AddActor(actor);
-        m_Widget.GetRenderWindow()->Render();
+        m_Widget.renderWindow()->Render();
     }
 
 
     void SolidVolumeView::RemoveActor(const std::string& name) {
         if (m_AllActors.find(name) != m_AllActors.end()) {
             m_Renderer->RemoveActor(m_AllActors[name]);
-            m_Widget.GetRenderWindow()->Render();
+            m_Widget.renderWindow()->Render();
         }
         m_AllActors.erase(name);
     }
@@ -157,8 +157,8 @@ namespace seeg {
         m_AllVolumes[name].opacityTransfer = volumeProperty->GetScalarOpacity();
 
 
-        vtkRenderWindow *renderWindow = m_Widget.GetRenderWindow();
-        vtkRenderWindowInteractor *renderWindowInteractor = m_Widget.GetInteractor();
+        vtkRenderWindow *renderWindow = m_Widget.renderWindow();
+        vtkRenderWindowInteractor *renderWindowInteractor = m_Widget.interactor();
 
         if (m_Renderer == 0) {
             m_Renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -173,7 +173,7 @@ namespace seeg {
             m_Renderer->AddVolume(vol);
         }
 
-        m_Widget.GetRenderWindow()->Render();
+        m_Widget.renderWindow()->Render();
 
 
     }
@@ -189,7 +189,7 @@ namespace seeg {
     void SolidVolumeView::RemoveVolume(const std::string& name) {
         if (m_AllVolumes.find(name) != m_AllVolumes.end()) {
             m_Renderer->RemoveVolume(m_AllVolumes[name].volume);
-            m_Widget.GetRenderWindow()->Render();
+            m_Widget.renderWindow()->Render();
         }
         m_AllVolumes.erase(name);
     }
@@ -197,7 +197,7 @@ namespace seeg {
 
 
     void SolidVolumeView::Render() {
-        m_Widget.GetRenderWindow()->Render();
+        m_Widget.renderWindow()->Render();
     }
 
     /**** PROTECTED AND PRIVATE FUNCTIONS ****/

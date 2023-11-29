@@ -150,59 +150,59 @@ void SEEGTrajVisWidget::OnUserSliceSelect(vtkObject* caller) {
     double distToTarget = 90;
 
     if (m_T1ProbeView.get()) {
-        if (caller == this->m_T1ProbeView->GetProbeEyeWidget()->GetInteractor()) {
+        if (caller == this->m_T1ProbeView->GetProbeEyeWidget()->interactor()) {
             distToTarget = m_T1ProbeView->GetCurrentDistanceToTarget();
         }
     }
 
     if (m_GadoProbeView.get()) {
-        if (caller == this->m_GadoProbeView->GetProbeEyeWidget()->GetInteractor()) {
+        if (caller == this->m_GadoProbeView->GetProbeEyeWidget()->interactor()) {
             distToTarget = m_GadoProbeView->GetCurrentDistanceToTarget();
         }
     }
 
 
     if (m_GadoAngioProbeView.get()) {
-        if (caller == this->m_GadoAngioProbeView->GetProbeEyeWidget()->GetInteractor()) {
+        if (caller == this->m_GadoAngioProbeView->GetProbeEyeWidget()->interactor()) {
             distToTarget = m_GadoAngioProbeView->GetCurrentDistanceToTarget();
         }
     }
 
     if (m_CtaProbeView.get()) {
-        if (caller == this->m_CtaProbeView->GetProbeEyeWidget()->GetInteractor()) {
+        if (caller == this->m_CtaProbeView->GetProbeEyeWidget()->interactor()) {
             distToTarget = m_CtaProbeView->GetCurrentDistanceToTarget();
         }
     }
 
 
     if (m_CtaAngioProbeView.get()) {
-        if (caller == this->m_CtaAngioProbeView->GetProbeEyeWidget()->GetInteractor()) {
+        if (caller == this->m_CtaAngioProbeView->GetProbeEyeWidget()->interactor()) {
             distToTarget = m_CtaAngioProbeView->GetCurrentDistanceToTarget();
         }
     }
 
-    if (m_T1ProbeView.get() && caller != m_T1ProbeView->GetProbeEyeWidget()->GetInteractor()) {
+    if (m_T1ProbeView.get() && caller != m_T1ProbeView->GetProbeEyeWidget()->interactor()) {
         m_T1ProbeView->GoToSlice(distToTarget);
         m_T1ProbeView->Render();
     }
 
 
-    if (m_GadoProbeView.get() && caller != m_GadoProbeView->GetProbeEyeWidget()->GetInteractor()) {
+    if (m_GadoProbeView.get() && caller != m_GadoProbeView->GetProbeEyeWidget()->interactor()) {
         m_GadoProbeView->GoToSlice(distToTarget);
         m_GadoProbeView->Render();
     }
 
-    if (m_GadoAngioProbeView.get() && caller != m_GadoAngioProbeView->GetProbeEyeWidget()->GetInteractor()) {
+    if (m_GadoAngioProbeView.get() && caller != m_GadoAngioProbeView->GetProbeEyeWidget()->interactor()) {
         m_GadoAngioProbeView->GoToSlice(distToTarget);
         m_GadoAngioProbeView->Render();
     }
 
-    if (m_CtaProbeView.get() && caller != m_CtaProbeView->GetProbeEyeWidget()->GetInteractor()) {
+    if (m_CtaProbeView.get() && caller != m_CtaProbeView->GetProbeEyeWidget()->interactor()) {
         m_CtaProbeView->GoToSlice(distToTarget);
         m_CtaProbeView->Render();
     }
 
-    if (m_CtaAngioProbeView.get() && caller != m_CtaAngioProbeView->GetProbeEyeWidget()->GetInteractor()) {
+    if (m_CtaAngioProbeView.get() && caller != m_CtaAngioProbeView->GetProbeEyeWidget()->interactor()) {
         m_CtaAngioProbeView->GoToSlice(distToTarget);
         m_CtaAngioProbeView->Render();
     }
@@ -310,12 +310,12 @@ void SEEGTrajVisWidget::ConfigureT1ProbeView() {
         prop->SetColorLevel(55);
 
 
-        m_UserSliceSelectConnection->Connect(   m_T1ProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_T1ProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelBackwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
 
-        m_UserSliceSelectConnection->Connect(   m_T1ProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_T1ProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelForwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
@@ -338,12 +338,12 @@ void SEEGTrajVisWidget::ConfigureGadoProbeView() {
         prop->SetColorLevel(43);
 
 
-        m_UserSliceSelectConnection->Connect(   m_GadoProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_GadoProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelBackwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
 
-        m_UserSliceSelectConnection->Connect(   m_GadoProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_GadoProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelForwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
@@ -364,12 +364,12 @@ void SEEGTrajVisWidget::ConfigureGadoAngioProbeView() {
         prop->SetColorLevel(43);
 
 
-        m_UserSliceSelectConnection->Connect(   m_GadoAngioProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_GadoAngioProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelBackwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
 
-        m_UserSliceSelectConnection->Connect(   m_GadoAngioProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_GadoAngioProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelForwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
@@ -389,12 +389,12 @@ void SEEGTrajVisWidget::ConfigureCtaProbeView() {
         prop->SetColorLevel(43);
 
 
-        m_UserSliceSelectConnection->Connect(   m_CtaProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_CtaProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelBackwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
 
-        m_UserSliceSelectConnection->Connect(   m_CtaProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_CtaProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelForwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
@@ -415,12 +415,12 @@ void SEEGTrajVisWidget::ConfigureCtaAngioProbeView() {
         prop->SetColorLevel(43);
 
 
-        m_UserSliceSelectConnection->Connect(   m_CtaAngioProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_CtaAngioProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelBackwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));
 
-        m_UserSliceSelectConnection->Connect(   m_CtaAngioProbeView->GetProbeEyeWidget()->GetInteractor(),
+        m_UserSliceSelectConnection->Connect(   m_CtaAngioProbeView->GetProbeEyeWidget()->interactor(),
                                                 vtkCommand::MouseWheelForwardEvent,
                                                 this,
                                                 SLOT(OnUserSliceSelect(vtkObject*)));

@@ -98,7 +98,7 @@ namespace seeg {
 
     void TrajectoryView2D::Init() {
 
-        vtkSmartPointer<vtkRenderWindow> window = m_Widget.GetRenderWindow();
+        vtkSmartPointer<vtkRenderWindow> window = m_Widget.renderWindow();
 
         // OPEN VOLUME
         m_Connector = GrayConnectorType::New();
@@ -189,8 +189,8 @@ namespace seeg {
     }
 
     void TrajectoryView2D::Render() {
-        m_Widget.GetInteractor()->Render();
-        m_Widget.GetRenderWindow()->Render();
+        m_Widget.interactor()->Render();
+        m_Widget.renderWindow()->Render();
     }
 
 

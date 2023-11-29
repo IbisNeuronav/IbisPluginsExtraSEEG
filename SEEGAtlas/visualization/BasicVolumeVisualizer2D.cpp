@@ -273,7 +273,7 @@ namespace seeg {
 
         // CLEANUP
         for (int i=0; i<3; i++) {
-            renderWindow[i]= m_TriplanarWidget[i].GetRenderWindow();
+            renderWindow[i]= m_TriplanarWidget[i].renderWindow();
             if (m_TriplanarRenderer[i]) {
                 renderWindow[i]->RemoveRenderer(m_TriplanarRenderer[i]);
             }
@@ -281,7 +281,7 @@ namespace seeg {
             m_TriplanarImageStack[i] = vtkSmartPointer<vtkImageStack>::New();
         }
 
-        probeEyeWindow = m_ProbeEyeWidget.GetRenderWindow();
+        probeEyeWindow = m_ProbeEyeWidget.renderWindow();
         if (m_ProbeEyeRenderer) {
             probeEyeWindow->RemoveRenderer(m_ProbeEyeRenderer);
         }
@@ -478,8 +478,8 @@ namespace seeg {
         if (index < 0 || index>=3) {
             return;
         }
-        m_TriplanarWidget[index].GetInteractor()->Render();
-        m_TriplanarWidget[index].GetRenderWindow()->Render();
+        m_TriplanarWidget[index].interactor()->Render();
+        m_TriplanarWidget[index].renderWindow()->Render();
     }
 
     void BasicVolumeVisualizer2D::ProbeEyeNextSlice(bool sliceUp) {
@@ -548,8 +548,8 @@ namespace seeg {
     }
 
     void BasicVolumeVisualizer2D::ProbeEyeRender() {
-        m_ProbeEyeWidget.GetInteractor()->Render();
-        m_ProbeEyeWidget.GetRenderWindow()->Render();
+        m_ProbeEyeWidget.interactor()->Render();
+        m_ProbeEyeWidget.renderWindow()->Render();
     }
 
 

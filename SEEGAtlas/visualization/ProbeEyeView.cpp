@@ -129,7 +129,7 @@ namespace seeg {
 
     void ProbeEyeView::Init() {
 
-        vtkSmartPointer<vtkRenderWindow> probeEyeWindow = m_ProbeEyeWidget.GetRenderWindow();
+        vtkSmartPointer<vtkRenderWindow> probeEyeWindow = m_ProbeEyeWidget.renderWindow();
 
         // OPEN VOLUME
         m_Connector = GrayConnectorType::New();
@@ -285,8 +285,8 @@ namespace seeg {
     }
 
     void ProbeEyeView::Render() {
-        m_ProbeEyeWidget.GetInteractor()->Render();
-        m_ProbeEyeWidget.GetRenderWindow()->Render();
+        m_ProbeEyeWidget.interactor()->Render();
+        m_ProbeEyeWidget.renderWindow()->Render();
     }
 
 
