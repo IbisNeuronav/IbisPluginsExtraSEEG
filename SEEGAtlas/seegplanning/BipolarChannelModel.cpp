@@ -6,85 +6,92 @@ namespace seeg {
     //BipolarChannelModel::BipolarChannelModel(const double cylinderHeight, const double cylinderRadius, const double sphereRadius, const int insideValue) {
     BipolarChannelModel::BipolarChannelModel(Point3D contact1Center, Point3D contact2Center, const double cylinderRadius, const double sphereRadius, const int insideValue) {
 
-    // 1. Assign contact center variables
-    m_Contact1Center = contact1Center;
-    m_Contact2Center = contact2Center;
+        // 1. Assign contact center variables
+        m_Contact1Center = contact1Center;
+        m_Contact2Center = contact2Center;
 
-    //2. Get Height and direction to create and position model
-    Vector3D_lf pt1 (contact1Center[0], contact1Center[1], contact1Center[2]);
-    Vector3D_lf pt2 (contact2Center[0], contact2Center[1], contact2Center[2]);
-    double cylinderHeight = norm(pt2-pt1);                  // Cylinder's height equals the distance between points
-  //  Vector3D_lf unit_vect = (pt2-pt1)/cylinderHeight;       // unit_vec indicates model's direction (vector's direction)
-    Point3D centralPtContacts;
-    centralPtContacts[0]=(contact1Center[0]+contact2Center[0])/2;
-    centralPtContacts[1]=(contact1Center[1]+contact2Center[1])/2;
-    centralPtContacts[2]=(contact1Center[2]+contact2Center[2])/2;
+        //2. Get Height and direction to create and position model
+        Vector3D_lf pt1( contact1Center[0], contact1Center[1], contact1Center[2] );
+        Vector3D_lf pt2( contact2Center[0], contact2Center[1], contact2Center[2] );
+        double cylinderHeight = norm( pt2 - pt1 );                  // Cylinder's height equals the distance between points
+      //  Vector3D_lf unit_vect = (pt2-pt1)/cylinderHeight;       // unit_vec indicates model's direction (vector's direction)
+        Point3D centralPtContacts;
+        centralPtContacts[0] = ( contact1Center[0] + contact2Center[0] ) / 2;
+        centralPtContacts[1] = ( contact1Center[1] + contact2Center[1] ) / 2;
+        centralPtContacts[2] = ( contact1Center[2] + contact2Center[2] ) / 2;
 
-    // 3. Create Model's components
-    //Cylinder
-    CylinderType::Pointer cylinder = CylinderType::New();
-    cylinder->SetRadius(cylinderRadius);
-    cylinder->SetHeight(cylinderHeight);
-    //cylinder->IsInside(insidePoint)
-    //Sphere1
-    EllipseType::Pointer sphere1    = EllipseType::New();
-    sphere1->SetRadius(sphereRadius);
-    //Sphere2
-    EllipseType::Pointer sphere2    = EllipseType::New();
-    sphere2->SetRadius(sphereRadius);
+        // 3. Create Model's components
+        //Cylinder
+        //OR DOES IT NEED TO BE -HEIGHT/2, +HEIGHT/2?
+        TubeType::Pointer cylinder = TubeType::New();
+        TubeType::TubePointListType cylinderPointList;
+        TubeType::TubePointType p1, p2;
+        p1.SetPositionInObjectSpace( 0, 0, 0 );
+        p1.SetRadiusInObjectSpace( cylinderRadius );
+        cylinderPointList.push_back( p1 );
+        p2.SetPositionInObjectSpace( 0, 0, cylinderHeight );
+        p2.SetRadiusInObjectSpace( cylinderRadius );
+        cylinderPointList.push_back( p2 );
+        cylinder->SetPoints( cylinderPointList );
+        //Sphere1
+        EllipseType::Pointer sphere1    = EllipseType::New();
+        sphere1->SetRadiusInObjectSpace( sphereRadius );
+        //Sphere2
+        EllipseType::Pointer sphere2    = EllipseType::New();
+        sphere2->SetRadiusInObjectSpace( sphereRadius );
 
-    // 4. Assign inside value
-    sphere1->SetDefaultInsideValue(  insideValue );
-    cylinder->SetDefaultInsideValue( insideValue );
-    sphere2->SetDefaultInsideValue( insideValue );
+        // 4. Assign inside value
+        sphere1->SetDefaultInsideValue(  insideValue );
+        cylinder->SetDefaultInsideValue( insideValue );
+        sphere2->SetDefaultInsideValue( insideValue );
 
-    // 5. Position the different objects relative to each other and with respect to contact centers - sphere1 stays in place the others are moved in X
-    // Position all objects
-    EllipseType::TransformType::OffsetType  offsetSphere1, offsetSphere2;
-    CylinderType::TransformType::OffsetType offsetCylinder;
-    CylinderType::TransformType::CenterType centerCylinder;
-    // Sphere1
-    offsetSphere1[ 0 ] =  contact1Center[0];
-    offsetSphere1[ 1 ] =  contact1Center[1];
-    offsetSphere1[ 2 ] =  contact1Center[2];
-    sphere1->GetObjectToParentTransform()->SetOffset(offsetSphere1);
-    sphere1->ComputeObjectToWorldTransform();
-    //Cylinder
-    offsetCylinder[ 0 ] = contact1Center[0];
-    offsetCylinder[ 1 ] = contact1Center[1];
-    offsetCylinder[ 2 ] = contact1Center[2];
-    cylinder->GetObjectToParentTransform()->SetOffset(offsetCylinder);
-    centerCylinder[ 0 ] = centralPtContacts[0];
-    centerCylinder[ 1 ] = centralPtContacts[1];
-    centerCylinder[ 2 ] = centralPtContacts[2];
-    cylinder->GetObjectToParentTransform()->SetCenter(centerCylinder);
-    cylinder->ComputeObjectToWorldTransform();
-    //Sphere2
-    offsetSphere2[ 0 ] =  contact2Center[0];
-    offsetSphere2[ 1 ] =  contact2Center[1];
-    offsetSphere2[ 2 ] =  contact2Center[2];
-    sphere2->GetObjectToParentTransform()->SetOffset(offsetSphere2);
-    sphere2->ComputeObjectToWorldTransform();
-    // Rotate Cylinder which axis??
-  //  typedef GroupType::TransformType TransformType;
-  //  TransformType::Pointer transform = TransformType::New();
- //   transform->SetIdentity();
-//    TransformType::OutputVectorType  translation;
-  //  TransformType::CenterType        center;
-  //  transform->Rotate( 1, 2, itk::Math::pi / 2.0 ); //RIZ: MAL!!!!! see how to estimate proper rotation!
-//    transform->Translate( translation, false );
+        // 5. Position the different objects relative to each other and with respect to contact centers - sphere1 stays in place the others are moved in X
+        // Position all objects
+        EllipseType::TransformType::OffsetType offsetSphere1, offsetSphere2;
+        TubeType::TransformType::OffsetType offsetCylinder;
+        TubeType::TransformType::CenterType centerCylinder;
+        // Sphere1
+        offsetSphere1[ 0 ] =  contact1Center[ 0 ];
+        offsetSphere1[ 1 ] =  contact1Center[ 1 ];
+        offsetSphere1[ 2 ] =  contact1Center[ 2 ];
+        sphere1->GetObjectToParentTransform()->SetOffset( offsetSphere1 );
+        sphere1->Update();
+        // Cylinder
+        offsetCylinder[ 0 ] = contact1Center[ 0 ];
+        offsetCylinder[ 1 ] = contact1Center[ 1 ];
+        offsetCylinder[ 2 ] = contact1Center[ 2 ];
+        cylinder->GetObjectToParentTransform()->SetOffset( offsetCylinder );
+        centerCylinder[ 0 ] = centralPtContacts[ 0 ];
+        centerCylinder[ 1 ] = centralPtContacts[ 1 ];
+        centerCylinder[ 2 ] = centralPtContacts[ 2 ];
+        cylinder->GetObjectToParentTransform()->SetCenter( centerCylinder );
+        cylinder->Update();
+        // Sphere2
+        offsetSphere2[ 0 ] =  contact2Center[ 0 ];
+        offsetSphere2[ 1 ] =  contact2Center[ 1 ];
+        offsetSphere2[ 2 ] =  contact2Center[ 2 ];
+        sphere2->GetObjectToParentTransform()->SetOffset( offsetSphere2 );
+        sphere2->Update();
+        // Rotate Cylinder which axis??
+      //  typedef GroupType::TransformType TransformType;
+      //  TransformType::Pointer transform = TransformType::New();
+     //   transform->SetIdentity();
+    //    TransformType::OutputVectorType  translation;
+      //  TransformType::CenterType        center;
+      //  transform->Rotate( 1, 2, itk::Math::pi / 2.0 ); //RIZ: MAL!!!!! see how to estimate proper rotation!
+    //    transform->Translate( translation, false );
 
 
-    // 6. Group objects to create model
-    GroupType::Pointer group = GroupType::New();
-    group->AddSpatialObject( sphere1 );
-    group->AddSpatialObject( cylinder );
-    group->AddSpatialObject( sphere2 );
-    //m_Model contains the grouped objects
-    m_Model = group;
+        // 6. Group objects to create model
+        GroupType::Pointer group = GroupType::New();
+        group->AddChild( sphere1 );
+        group->AddChild( cylinder );
+        group->AddChild( sphere2 );
+        //m_Model contains the grouped objects
+        m_Model = group;
 
-    //Save as FloatVolume Image ??
-    //GenerateImage();
+        //Save as FloatVolume Image ??
+        //GenerateImage();
     }
 
 /*    BipolarChannelModel::BipolarChannelModel(Point3D contact1Center, Point3D contact2Center, const double cylinderRadius, const double sphereRadius, const int insideValue) {
@@ -185,7 +192,6 @@ namespace seeg {
             }
         }
         return voxelsCount;
-
     }
 
 }

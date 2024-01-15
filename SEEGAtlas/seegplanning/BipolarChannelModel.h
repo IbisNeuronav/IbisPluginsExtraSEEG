@@ -9,7 +9,7 @@
 
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkEllipseSpatialObject.h"
-#include "itkCylinderSpatialObject.h"
+#include "itkTubeSpatialObject.h"
 #include "itkGroupSpatialObject.h"
 
 namespace seeg {
@@ -56,7 +56,7 @@ namespace seeg {
     private:
 
         typedef itk::EllipseSpatialObject< 3 >   EllipseType;
-        typedef itk::CylinderSpatialObject       CylinderType;
+        typedef itk::TubeSpatialObject< 3 >       TubeType;
         typedef itk::GroupSpatialObject< 3 >     GroupType;
         typedef itk::SpatialObjectToImageFilter<GroupType, FloatVolume >   SpatialObjectToImageFilterType;
 
