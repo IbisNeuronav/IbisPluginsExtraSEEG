@@ -534,7 +534,7 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedContacts(const int iElec) {
         // Find out if selected (use variable "isLocationSet")
         bool isContactSel = contact->IsLocationSet();
         areContactsSelected.push_back(isContactSel); // RIZ: OJO!!! CHECK if ORDER IS CORRECT!!!
-		qDebug() << "contact: " <<iCont <<" - bool: " <<isContactSel<<endl;
+		qDebug() << "contact: " << iCont <<" - bool: " << isContactSel;
 
        // double colorsPerContact[3] = {0.75,0.75,0.75}; // default is grey - RIZ: CHANGE to ELECTRODES default??
         int locationValue = 0; // default is 0 - correponds to 0 0 0 = black
@@ -544,11 +544,11 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedContacts(const int iElec) {
              locationValue = contact->GetContactLocationValue(); // Based on saved location
         }
         colorsPerContacts.push_back(locationValue);
-		qDebug() << "contact: " <<iCont <<" - color: " <<colorsPerContacts[iCont]<<endl;
+		qDebug() << "contact: " << iCont << " - color: " << colorsPerContacts[iCont];
     }
     // Create ONLY selected contacts using specified color
     this->CreateElectrodeWithSelectedContacts(iElec, pDeep, pSurface, areContactsSelected, colorsPerContacts);
-	qDebug() << "colorsPerContacts[1]: "  <<" - color: " <<colorsPerContacts[1]<<endl;
+	qDebug() << "colorsPerContacts[1]: "  << " - color: " << colorsPerContacts[1];
 
 }
 
@@ -574,13 +574,13 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedContacts(const int iElec, Point
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateContactCylinderObj("contact", pDeep, pSurface, m_ElectrodeModel);
     for (int iContact=0; iContact<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iContact++){
         scene->AddObject(m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj, m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
-		qDebug() << "contact: " <<iContact <<" is selected? " << isContactSelected[iContact] << endl;
+		qDebug() << "contact: " << iContact << " is selected? " << isContactSelected[iContact];
         dcolor[0] = labelColors[colorsPerContacts[iContact]][0]; // same as in labelvolumetosurface plugin object
         dcolor[1] = labelColors[colorsPerContacts[iContact]][1]; // same as in labelvolumetosurface plugin object
         dcolor[2] = labelColors[colorsPerContacts[iContact]][2]; // same as in labelvolumetosurface plugin object
 
         m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj->SetColor(dcolor);
-		qDebug() << "contact: " <<iContact <<" - color: " <<dcolor[0]<<" "<<dcolor[1]<<" "<<dcolor[2]<<endl;
+		qDebug() << "contact: " << iContact << " - color: " << dcolor[0] << " " << dcolor[1] << " " << dcolor[2];
 
         if (isContactSelected[iContact] == true) {
             m_SavedPlansData[iElec].m_ContactsDisplay[iContact].m_CylObj->SetHidden(false);
@@ -619,7 +619,7 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedChannels(const int iElec){
         // Find out if selected (use variable "isLocationSet")
         bool isChannelSel = channel->IsLocationSet();
         areChannelsSelected.push_back(isChannelSel); // RIZ: OJO!!! CHECK if ORDER IS CORRECT!!!
-		qDebug() << "channel: " <<iChannel <<" - bool: " <<isChannelSel<<endl;
+		qDebug() << "channel: " << iChannel << " - bool: " << isChannelSel;
 
         int locationValue = 0; // default is 0 - correponds to 0 0 0 = black
         if (isChannelSel == true) {
@@ -627,11 +627,11 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedChannels(const int iElec){
              locationValue = channel->GetChannelLocationValue(); // Based on saved location
         }
         colorsPerChannels.push_back(locationValue);
-		qDebug() << "channel: " <<channel->GetChannelName().c_str() <<" - color: " <<colorsPerChannels[iChannel]<<endl;
+		qDebug() << "channel: " << channel->GetChannelName().c_str() << " - color: " << colorsPerChannels[iChannel];
     }
     // Create ONLY selected channels using specified color
     this->CreateElectrodeWithSelectedChannels(iElec, pDeep, pSurface, areChannelsSelected, colorsPerChannels);
-	qDebug() << "colorsPerChannels[1]: "  <<" - color: " <<colorsPerChannels[1]<<endl;
+	qDebug() << "colorsPerChannels[1]: "  << " - color: " << colorsPerChannels[1];
 
 }
 
@@ -656,13 +656,13 @@ void SEEGAtlasWidget::CreateElectrodeWithSelectedChannels(const int iElec, seeg:
     m_SavedPlansData[iElec].m_ContactsDisplay = CreateChannelCylinderObj("channel", pDeep, pSurface, m_ElectrodeModel);
     for (int iChannel=0; iChannel<m_SavedPlansData[iElec].m_ContactsDisplay.size(); iChannel++){
         scene->AddObject(m_SavedPlansData[iElec].m_ContactsDisplay[iChannel].m_CylObj, m_SavedPlansData[iElec].m_ElectrodeDisplay.m_CylObj);
-		qDebug() << "channel: " <<iChannel <<" is selected? " << isChannelSelected[iChannel] << endl;
+		qDebug() << "channel: " << iChannel << " is selected? " << isChannelSelected[iChannel];
         dcolor[0] = labelColors[colorsPerChannels[iChannel]][0]; // same as in labelvolumetosurface plugin object
         dcolor[1] = labelColors[colorsPerChannels[iChannel]][1]; // same as in labelvolumetosurface plugin object
         dcolor[2] = labelColors[colorsPerChannels[iChannel]][2]; // same as in labelvolumetosurface plugin object
 
         m_SavedPlansData[iElec].m_ContactsDisplay[iChannel].m_CylObj->SetColor(dcolor);
-		qDebug() << "channel: " <<iChannel<<"-"<<iChannel+1 <<" - color: " <<dcolor[0]<<" "<<dcolor[1]<<" "<<dcolor[2]<<endl;
+		qDebug() << "channel: " << iChannel << "-" << iChannel + 1 << " - color: " << dcolor[0] << " " << dcolor[1] << " " << dcolor[2];
 
         if (isChannelSelected[iChannel] == true) {
             m_SavedPlansData[iElec].m_ContactsDisplay[iChannel].m_CylObj->SetHidden(false);
@@ -977,14 +977,14 @@ void SEEGAtlasWidget::onFindAnatLocation(seeg::ElectrodeInfo::Pointer electrode)
     // Find anatomical location for all contacts of the eletrode
     int nContacts = electrode->GetNumberOfContacts();
     FloatVolume::Pointer anatLabelsVol = openAtlasVolume();
-    if (anatLabelsVol.IsNotNull()) {
-        map <int,string> labelsMap = ReadAtlasLabels();
+    if( anatLabelsVol.IsNotNull() ) {
+        map<int,string> labelsMap = ReadAtlasLabels();
 		qDebug() << " Electrode Type: " <<  m_ElectrodeModel->GetElectrodeId().c_str();
-        SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New(anatLabelsVol, electrode->GetElectrodeModel()); //volume is only to have size,
+        SEEGContactsROIPipeline::Pointer pipelineContacts = SEEGContactsROIPipeline::New( anatLabelsVol, electrode->GetElectrodeModel() ); //volume is only to have size,
 
         bool useCylinder = ui->checkBoxUseCylinder->isChecked();
 
-        for (int iContact=0; iContact<nContacts; iContact++) {
+        for( int iContact = 0; iContact < nContacts; iContact++ ){
             // Find anatomical location for each contact of the eletrode
             vector<int> labelsCount;
             int voxelsInContactVol;
@@ -993,29 +993,29 @@ void SEEGAtlasWidget::onFindAnatLocation(seeg::ElectrodeInfo::Pointer electrode)
             //Compute Most common Label (highest count)
             //int probaMaxLabel = std::max_element(labelsCount, labelsCount.size());
             //int indexMaxLabel = std::distance(probaMaxLabel, labelsCount);
-            int indexMaxLabel=-1;
-            int sumMaxLabel=-1;
-            int totalVoxelsLabels =0;
-            for (int iLabel=0; iLabel<labelsCount.size(); iLabel++) {
-                totalVoxelsLabels+= labelsCount[iLabel];
-                if ((labelsCount[iLabel] > 0) && (labelsCount[iLabel] >= sumMaxLabel)) {  // using > or >= changes the results when 0.5 proba
+            int indexMaxLabel = -1;
+            int sumMaxLabel = -1;
+            int totalVoxelsLabels = 0;
+            for( int iLabel = 0; iLabel < labelsCount.size(); iLabel++ ){
+                totalVoxelsLabels += labelsCount[iLabel];
+                if( ( labelsCount[iLabel] > 0 ) && ( labelsCount[iLabel] >= sumMaxLabel ) ){  // using > or >= changes the results when 0.5 proba
                     sumMaxLabel = labelsCount[iLabel];
                     indexMaxLabel = iLabel;
                     //float proba = float(sumMaxLabel)/float(totalVoxelsLabels);
-                    qDebug() << " Most Common Label so far: " << indexMaxLabel  << " - name:" << labelsMap[indexMaxLabel].c_str() <<" with Number of voxels of Occupacy: "<< sumMaxLabel << " out of: "<<voxelsInContactVol;
+                    qDebug() << " Most Common Label so far: " << indexMaxLabel  << " - name:" << labelsMap[indexMaxLabel].c_str() << " with Number of voxels of Occupacy: " << sumMaxLabel << " out of: " << voxelsInContactVol;
                 }
             }
 
             //Assign most common label to contact
-            float proba = float(sumMaxLabel)/float(voxelsInContactVol);
-			qDebug() << "Contact index: "<< iContact<< " Most Common Label number: " << indexMaxLabel << " - name:" << labelsMap[indexMaxLabel].c_str() << " with Percentage Occupacy: "<< proba<< " (voxels with labels: "<<totalVoxelsLabels<< " - # labels: "<<labelsCount.size() <<" )";
-            if (!isnan(proba)) {
-                if (labelsMap.size() > 0) {
-                    contact->SetContactLocation(labelsMap[indexMaxLabel], indexMaxLabel, proba);
-                } else {
+            float proba = float( sumMaxLabel ) / float( voxelsInContactVol );
+			qDebug() << "Contact index: " << iContact << " Most Common Label number: " << indexMaxLabel << " - name:" << labelsMap[indexMaxLabel].c_str() << " with Percentage Occupacy: " << proba << " (voxels with labels: " << totalVoxelsLabels << " - # labels: " << labelsCount.size() << " )";
+            if( !isnan( proba ) ) {
+                if( labelsMap.size() > 0 ){
+                    contact->SetContactLocation( labelsMap[indexMaxLabel], indexMaxLabel, proba );
+                }else{
                     stringstream ssLabel;
                     ssLabel << indexMaxLabel;
-                    contact->SetContactLocation(ssLabel.str(), indexMaxLabel, proba);
+                    contact->SetContactLocation( ssLabel.str(), indexMaxLabel, proba );
                 }
             }
         }
@@ -1458,13 +1458,13 @@ void SEEGAtlasWidget::onLoadOnePlanFromCSVFile(const int iElec, const string fil
         //Update type of electrode on list
         this->UpdateUiFromConfiguration();
 
-		qDebug() << electrodeName.c_str() << " Electrode Type: " << electrode->GetElectrodeName().c_str() << " - " << m_ElectrodeModel->GetElectrodeName().c_str() << " index: " << ui->comboBoxElectrodeType->currentIndex() << endl;
+		qDebug() << electrodeName.c_str() << " Electrode Type: " << electrode->GetElectrodeName().c_str() << " - " << m_ElectrodeModel->GetElectrodeName().c_str() << " index: " << ui->comboBoxElectrodeType->currentIndex();
         
 
     // this->UpdatePlan(iElec);
    // CreateActivePlan();
     }
-	qDebug() << "onLoadOnePlanFromCSVFile "<< iElec << " Done!" << endl;
+	qDebug() << "onLoadOnePlanFromCSVFile " << iElec << " Done!";
 
  }
 
@@ -1486,7 +1486,7 @@ void SEEGAtlasWidget::onSavePlanningToDirectory(QString dirName) {
         if (!dir.exists()) {
             bool status = dir.mkdir(dirName);
         }
-		qDebug() <<"... Saving electrodes in dir:" << dirName.toStdString().c_str() <<endl;
+		qDebug() << "... Saving electrodes in dir:" << dirName.toStdString().c_str();
 
         // 1. Save also Best Cohort
         //SEEGElectrodesCohort::Pointer pathCohortObj = GetSEEGElectrodesCohort();
@@ -1569,10 +1569,6 @@ void SEEGAtlasWidget::UpdatePlan(int iElec) {
 
 void SEEGAtlasWidget::onChangeTrajectoryCylinderLength(int sliderPos) {
     int newlen = sliderPos;
-    double *ep;
-    double *tp;
-    Point3D ept, tpt;
-
     ui->lineEditCylinderLength->setText(QString::number(newlen));
     CreateAllElectrodes();
 }
@@ -1613,7 +1609,7 @@ void SEEGAtlasWidget::onGetLocationValue(){
 int SEEGAtlasWidget::getLocationValue(seeg::Point3D point){
     // Finds value of Atlas volume at the given point and returns it
     float pixelValue;
-    seeg:FloatVolume::Pointer anatLabelsVol = openAtlasVolume();
+    seeg::FloatVolume::Pointer anatLabelsVol = openAtlasVolume();
     if (anatLabelsVol.IsNotNull()) {
         // Convert position in coordinates to index
         FloatVolume::IndexType indexPos;
@@ -2506,7 +2502,7 @@ void SEEGAtlasWidget::onRunBatchAnalysis(){
     filePatients.open(fullFileNamePatients.c_str());
     if (filePatients.is_open()){
         getline(filePatients, linePatientInfo);
-        while(~filePatients.eof() && !linePatientInfo.empty()) {
+        while(!filePatients.eof() && !linePatientInfo.empty()) {
             ResetElectrodes();
             Application::GetInstance().GetSceneManager()->RemoveAllChildrenObjects(this->m_TrajPlanMainObject);
 
