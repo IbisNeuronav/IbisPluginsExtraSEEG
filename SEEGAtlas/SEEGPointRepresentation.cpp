@@ -50,7 +50,7 @@ int SEEGPointRepresentation::InsertNextPoint(double x, double y, double z)
     if( !m_points ) return 0;
     int index = m_points->GetNumberOfPoints();
     QString pointname;
-    pointname.sprintf("%s_%02d", m_points->GetName().toStdString().c_str(), index);
+    pointname.asprintf("%s_%02d", m_points->GetName().toStdString().c_str(), index);
     double pos[3] = {x, y, z};
     m_points->AddPoint(pointname, pos);
     return 1;
