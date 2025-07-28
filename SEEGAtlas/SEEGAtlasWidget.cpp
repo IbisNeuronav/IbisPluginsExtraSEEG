@@ -2462,13 +2462,13 @@ map <int,string> SEEGAtlasWidget::ReadAtlasLabels() {
     while(!xmlReaderAtlasLabels.atEnd() && !xmlReaderAtlasLabels.hasError()) {
         // QXmlStreamReader::TokenType tokenAtlasLabel = xmlReaderAtlasLabels.readNext();
         while (xmlReaderAtlasLabels.readNextStartElement()) {
-            if (xmlReaderAtlasLabels.name() == "Label") { // now we are inside label
+            if (xmlReaderAtlasLabels.name().toUtf8().toStdString() == "Label") { // now we are inside label
                 QString qsLabelName, qsLabelNumber;
                 while (xmlReaderAtlasLabels.readNextStartElement()) {
-                    if (xmlReaderAtlasLabels.name() == "Name") {
+                    if (xmlReaderAtlasLabels.name().toUtf8().toStdString() == "Name") {
                         qsLabelName = xmlReaderAtlasLabels.readElementText();
                     }
-                    else if (xmlReaderAtlasLabels.name() == "Number"){
+                    else if (xmlReaderAtlasLabels.name().toUtf8().toStdString() == "Number"){
                         qsLabelNumber = xmlReaderAtlasLabels.readElementText();
 
                     }
